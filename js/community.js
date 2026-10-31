@@ -1,6 +1,6 @@
 /* VikingGOLD – Updates + Chat modul (az app.js tölti be: import('./community.js')) */
 import {
-  collection, doc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp
+  collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
 const ROOMS = [
@@ -10,7 +10,7 @@ const ROOMS = [
   { id: 'offtopic', name: 'offtopic', desc: 'Minden más.' }
 ];
 const ONLINE_MS = 11 * 60e3;
-const EMOJIS = ['👍', '🔥', '😂', '😮', '❤️', '🎯', '💰', '😎', '🙏', '👏', '😢', '🤔', '✅', '❌', '⚽', '🏀'];
+const REACTIONS = { up: '👍', fire: '🔥', heart: '❤️', laugh: '😂', win: '🏆' };   // a Firestore szabály csak ezeket a kulcsokat engedi
 const COMPOSER_EMOJIS = ['😀', '😂', '😅', '😉', '😍', '😎', '🤔', '😮', '😢', '😡', '👍', '👎', '👏', '🙏', '🔥', '💯', '🎯', '💰', '⚽', '🏀', '🏒', '🎾', '🍀', '🏆', '✅', '❌', '⚠️', '❤️', '🎉', '💪', '🤝', '👀'];
 const TAGS = { new: 'Újdonság', imp: 'Fejlesztés', fix: 'Javítás', ann: 'Bejelentés' };
 
@@ -83,7 +83,7 @@ export function updatesPage(c) {
         <div style="flex:1;min-width:160px"><label for="uTag">Típus</label><select id="uTag">${Object.entries(TAGS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></div>
         <div style="flex:1;min-width:160px"><label for="uVer">Verzió (nem kötelező)</label><input id="uVer" maxlength="20" placeholder="pl. 1.4" autocomplete="off"></div>
       </div>
-      <label for="uBody">Szöveg</label><textarea id="uBody" maxlength="6000"></textarea>
+      <label for="uBody">Szöveg</label><textarea id="uBody" maxlength="4000"></textarea>
       <p class="small" style="margin:8px 0 0">Formázás: <code># Alcím</code> <code>- lista</code> <code>**félkövér**</code> – üres sor = térköz.</p>
       <label class="chk"><input type="checkbox" id="uPin"> Kitűzés az oldal tetejére</label>
       <div class="row" style="margin-top:14px"><button class="btn" id="uSave">Közzététel</button><button class="btn ghost" id="uCancel" hidden>Mégse</button></div>
@@ -171,7 +171,7 @@ export function chatPage(c) {
   const roomFromHash = () => { const h = decodeURIComponent(location.hash.replace('#', '')); return ROOMS.some(r => r.id === h) ? h : 'altalanos'; };
 
   let room = roomFromHash(), limitN = 60, msgs = [], users = {}, pres = {}, pinned = null;
-  let unsubMsgs = null, unsubRoom = null, replyTo = null, editingId = null, stick = true, firstLoad = true;
+  let unsubMsgs = null, replyTo = null, editingId = null, stick = true, firstLoad = true;
 
   $('#main').innerHTML = `<section class="wrap chat-wrap"><div class="dc" id="dc">
     <aside class="dc-side">
@@ -250,7 +250,7 @@ export function chatPage(c) {
       return `${pre}<span class="mn ${self ? 'me' : ''}">@${nm}</span>`;
     });
     const rx = m.rx || {};
-    const rxHtml = Object.keys(rx).filter(k => Array.isArray(rx[k]) && rx[k].length).map(k => `<button class="rx ${rx[k].includes(me.uid) ? 'on' : ''}" data-rx="${esc(k)}" data-id="${esc(m.id)}">${esc(k)} <b>${rx[k].length}</b></button>`).join('');
+    const rxHtml = Object.keys(REACTIONS).filter(k => Array.isArray(rx[k]) && rx[k].length).map(k => `<button class="rx ${rx[k].includes(me.uid) ? 'on' : ''}" data-rx="${k}" data-id="${esc(m.id)}">${REACTIONS[k]} <b>${rx[k].length}</b></button>`).join('');
     const head = grp ? `<span class="dc-gt">${hhmm(m.t)}</span>` : avatar(m.uid, m.name);
     const body = editingId === m.id
       ? `<div class="dc-edit"><textarea id="edTx" maxlength="1000">${esc(m.text)}</textarea><div class="row"><button class="btn sm" data-edsave="${esc(m.id)}">Mentés</button><button class="btn sm ghost" data-edcancel="1">Mégse</button><small>Enter = mentés, Esc = mégse</small></div></div>`
@@ -264,7 +264,7 @@ export function chatPage(c) {
         ${body}
         ${rxHtml ? `<div class="dc-rx">${rxHtml}</div>` : ''}
       </div>
-      <div class="dc-act">${EMOJIS.slice(0, 4).map(e => `<button data-react="${e}" data-id="${esc(m.id)}" title="Reakció">${e}</button>`).join('')}<i></i>
+      <div class="dc-act">${Object.entries(REACTIONS).map(([k, e]) => `<button data-react="${k}" data-id="${esc(m.id)}" title="Reakció">${e}</button>`).join('')}<i></i>
         <button data-reply="${esc(m.id)}" title="Válasz">↩</button>
         ${mine ? `<button data-edit="${esc(m.id)}" title="Szerkesztés">✏️</button>` : ''}
         ${admin ? `<button data-pinm="${esc(m.id)}" title="Kitűzés">📌</button>` : ''}
@@ -325,9 +325,11 @@ export function chatPage(c) {
   }
   async function pinMsg(m) {
     if (!m) return;
-    const isPinned = pinned && pinned.id === m.id;
-    try { await setDoc(doc(db, 'chatRooms', room), { pin: isPinned ? null : { id: m.id, name: m.name, text: String(m.text || '').slice(0, 300) } }, { merge: true }); }
-    catch (e) { toast('Nem sikerült: ' + (e.code || e.message), 'err'); }
+    try {
+      if (m.pin) { await updateDoc(msgDoc(m.id), { pin: false }); return; }
+      for (const o of msgs.filter(x => x.pin && x.id !== m.id)) await updateDoc(msgDoc(o.id), { pin: false });
+      await updateDoc(msgDoc(m.id), { pin: true });
+    } catch (e) { toast('Nem sikerült: ' + (e.code || e.message), 'err'); }
   }
   function setReply(m) {
     replyTo = { id: m.id, name: m.name, text: String(m.text || '').slice(0, 120) };
@@ -359,14 +361,10 @@ export function chatPage(c) {
   /* ---------- feliratkozások ---------- */
   function drawPin() {
     const p = $('#dcPin');
-    if (!pinned || !pinned.id) { p.hidden = true; return; }
-    p.hidden = false; p.innerHTML = `<span>📌</span><div><b>${esc(pinned.name || '')}</b>: ${esc(pinned.text || '')}</div>`;
+    pinned = msgs.slice().reverse().find(x => x.pin) || null;
+    if (!pinned) { p.hidden = true; return; }
+    p.hidden = false; p.innerHTML = `<span>📌</span><div><b>${esc(pinned.name || '')}</b>: ${esc(String(pinned.text || '').slice(0, 300))}</div>`;
     p.onclick = () => gotoMsg(pinned.id);
-  }
-  function subscribeRoom() {
-    if (unsubRoom) unsubRoom();
-    pinned = null; drawPin();
-    unsubRoom = onSnapshot(doc(db, 'chatRooms', room), s => { pinned = (s.exists() && s.data().pin) || null; drawPin(); }, () => { });
   }
   function subscribeMsgs(keep) {
     if (unsubMsgs) unsubMsgs();
@@ -378,16 +376,16 @@ export function chatPage(c) {
       msgs = sn.docs.map(d => { const x = d.data({ serverTimestamps: 'estimate' }); return { id: d.id, ...x, t: tsMs(x.ts) || Date.now() }; }).reverse();
       if (firstLoad) { stick = true; firstLoad = false; }
       else if (!keep) stick = wasNear || (msgs.length && msgs[msgs.length - 1].uid === me.uid);
-      drawMsgs(!!keep && !stick);
+      drawMsgs(!!keep && !stick); drawPin();
       if (!stick && msgs.length > prevCount && !keep) $('#dcNew').hidden = false;
       if (document.visibilityState === 'visible') markRead('vg_read_' + r);
     }, e => { box.innerHTML = `<div class="dc-empty">Nem tölthető be: ${esc(e.code || e.message)}</div>`; });
   }
   function switchRoom() {
     room = roomFromHash(); window.vgChatRoom = room;
-    limitN = 60; msgs = []; editingId = null; firstLoad = true; stick = true; clearReply();
+    limitN = 60; msgs = []; pinned = null; drawPin(); editingId = null; firstLoad = true; stick = true; clearReply();
     $('#dcNew').hidden = true; dc.classList.remove('mem-open');
-    drawRooms(); subscribeRoom(); subscribeMsgs(false);
+    drawRooms(); subscribeMsgs(false);
     markRead('vg_read_' + room);
   }
 

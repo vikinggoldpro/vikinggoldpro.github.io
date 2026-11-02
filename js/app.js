@@ -28,6 +28,18 @@ const ymd = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.get
 const DAYS = ['vasárnap', 'hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek', 'szombat'];
 const MONTHS = ['', 'január', 'február', 'március', 'április', 'május', 'június', 'július', 'augusztus', 'szeptember', 'október', 'november', 'december'];
 const huDate = s => { const d = new Date(s + 'T12:00:00'); return isNaN(d) ? s : `${d.getFullYear()}. ${MONTHS[d.getMonth() + 1]} ${d.getDate()}., ${DAYS[d.getDay()]}`; };
+/* ---------- téma + animált háttér ---------- */
+(function () {
+  const get = () => { try { return localStorage.getItem('vg_theme') || 'auto'; } catch (e) { return 'auto'; } };
+  const apply = () => {
+    const t = get(), r = t === 'auto' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : t;
+    document.documentElement.setAttribute('data-theme', r);
+    const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = r === 'light' ? '#f5f3f8' : '#09070f';
+  };
+  window.vgTheme = apply; apply();
+  try { matchMedia('(prefers-color-scheme: light)').addEventListener('change', apply); } catch (e) { }
+  const sc = document.createElement('script'); sc.src = '/assets/bg.js?v=20261102e'; sc.defer = true; document.head.appendChild(sc);
+})();
 const page = document.body.dataset.page;
 const params = new URLSearchParams(location.search);
 const configured = !bootError && !!firebaseConfig && !!firebaseConfig.apiKey && !String(firebaseConfig.apiKey).startsWith('IDE_');

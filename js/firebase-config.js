@@ -11,6 +11,6 @@ export const firebaseConfig = {
 
 // Discord összekapcsolás: https://discord.com/developers/applications -> New Application -> OAuth2
 // -> Redirects: https://vikinggoldpro.github.io/beallitasok  -> ide másold az Application ID-t (Client ID)
-export const discordClientId = "";
+export const discordClientId = "1566871797146849402";
 // Discord szerver meghívó link (pl. https://discord.gg/xxxxxx) – a menüben a "Discord szerver" gomb ide visz
 export const discordInvite = "";

@@ -86,3 +86,7 @@ main{padding:30px 0 20px}
   .sb-scrim.open{opacity:1;pointer-events:auto}
 }
 @media(prefers-reduced-motion:reduce){.sb,.sb-scrim{transition:none}}
+
+/* alsó mozgó sáv eltávolítva */
+.tick{display:none!important}
+body.has-tick{padding-bottom:0!important}

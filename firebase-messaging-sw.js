@@ -2,12 +2,12 @@
    1) Offline támogatás: a lapok és a fájlok a hálózatról töltődnek, de ha nincs net, a legutóbbi mentett változat jelenik meg.
    2) Telefonos push: megjeleníti a szerverről érkező értesítést, és kattintásra megnyitja a megfelelő oldalt.
    A fájl neve azért firebase-messaging-sw.js, mert a js/notify.js is ezt regisztrálja – így egyetlen service worker van. */
-const VER = 'vg-v2';
+const VER = 'vg-v3';
 const PAGES = VER + '-pages', STATIC = VER + '-static', LIBS = VER + '-libs';
-const PRECACHE = ['/offline.html', '/assets/style.css', '/assets/pro.css', '/assets/theme.js', '/assets/logo.webp', '/assets/icon-192.png'];
+const PRECACHE = ['/offline.html', '/assets/style.css', '/assets/pro.css', '/js/theme.js', '/assets/logo.webp', '/assets/icon-192.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(STATIC).then(c => c.addAll(PRECACHE)).catch(() => { }).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(STATIC).then(c => Promise.all(PRECACHE.map(u => c.add(u).catch(() => { })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -50,7 +50,11 @@ self.addEventListener('fetch', e => {
 
   // CSS / JS: előbb a hálózat (így a frissítés azonnal megjelenik), offline esetén a mentett példány
   if (/\.(?:css|js|webmanifest)$/i.test(url.pathname)) {
-    e.respondWith(fetch(req).then(r => put(STATIC, req, r)).catch(() => caches.match(req)));
+    e.respondWith(
+      fetch(req).then(r => put(STATIC, req, r))
+        .catch(() => fetch(new Request(req, { cache: 'reload' })).then(r => put(STATIC, req, r)))      // 2. próba, ha az első elakadt
+        .catch(() => caches.match(req).then(hit => hit || Response.error()))                          // végül a mentett példány
+    );
   }
 });
 

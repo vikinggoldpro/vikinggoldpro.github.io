@@ -1174,6 +1174,7 @@ function drawTicker() {
   t.innerHTML = `<div class="tk-half">${half}</div><div class="tk-half" aria-hidden="true">${half}</div>`;
 }
 function startTicker() {
+  return; // alsó mozgó sáv kikapcsolva
   if (page === 'chat' || document.getElementById('tick')) return;
   document.body.classList.add('has-tick');
   document.body.insertAdjacentHTML('beforeend', '<div class="tick" id="tick" role="marquee" aria-label="Információk"><div class="tk-lab"><span></span>VikingGOLD</div><div class="tk-view"><div class="tk-track" id="tkTrack"></div></div></div>');

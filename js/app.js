@@ -128,11 +128,8 @@ function layout() {
   <div class="sb-scroll">
     <div class="sb-h">Főmenü</div>
     <nav class="sb-nav">${main0.map(([k, h, l]) => `<a href="${h}" class="${isOn(k, h) ? 'on' : ''}">${ic(IC[k] || IC.home)}<span>${l}</span></a>`).join('')}</nav>
-    <div class="sb-h">Gyors elérés</div>
-    <nav class="sb-nav">
-      <a href="${esc(discordInvite || '/elerhetosegek')}" ${discordInvite ? 'target="_blank" rel="noopener"' : ''}>${ic(IC.dc)}<span>Discord szerver</span></a>
-      ${user ? '' : `<a href="/auth?mode=login">${ic(IC.out)}<span>Belépés</span></a><a href="/auth?mode=register">${ic(IC.vip)}<span>Ingyenes regisztráció</span></a>`}
-    </nav>
+    ${user ? '' : `<div class="sb-h">Gyors elérés</div>
+    <nav class="sb-nav"><a href="/auth?mode=login">${ic(IC.out)}<span>Belépés</span></a><a href="/auth?mode=register">${ic(IC.vip)}<span>Ingyenes regisztráció</span></a></nav>`}
   </div>
   <div class="sb-bot">
     ${dcCard}

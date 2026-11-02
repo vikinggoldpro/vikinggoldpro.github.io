@@ -8,7 +8,7 @@ try {
   ({ initializeApp } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'));
   ({ getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, sendEmailVerification, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, verifyPasswordResetCode, confirmPasswordReset, applyActionCode } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js'));
   ({ getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, getDocs, onSnapshot, query, where, orderBy, limit, writeBatch } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'));
-  ({ mktList, mktDef, lineSuggest, buildPick, evalTip, otFlag } = await import('./markets.js'));
+  ({ mktList, mktDef, lineSuggest, buildPick, evalTip, otFlag } = await import('/js/markets.js'));
 } catch (e) { bootError = e; }
 /*BOOT_END*/
 

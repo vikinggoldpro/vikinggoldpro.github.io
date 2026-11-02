@@ -94,7 +94,7 @@ function layout() {
     sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/>',
     moon: '<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>'
   };
-  const main0 = [['home', '/', 'Kezdőlap'], ['tippek', '/tippek', 'Tippek'], ['updates', '/updates', 'Updates'], ['chat', '/chat', 'Chat'], ['calc', '/kalkulator', 'Kalkulátor']]
+  const main0 = [['home', '/', 'Kezdőlap'], ['tippek', '/tippek', 'Tippek'], ['updates', '/updates', 'Updates'], ['chat', '/chat', 'Chat']]
     .concat(user && (adminFlag || (profile && profile.vip)) ? [['vip', '/vip', 'VIP Klub']] : [])
     .concat([['contact', '/elerhetosegek', 'Elérhetőségek'], ['safe', '/felelos-jatek', 'Felelős játék']])
     .concat(user ? [['settings', '/beallitasok', 'Beállítások']] : []);

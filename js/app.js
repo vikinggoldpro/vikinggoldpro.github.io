@@ -3,12 +3,37 @@ let firebaseConfig, discordClientId = '', discordInvite = '', initializeApp, get
 let getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, getDocs, onSnapshot, query, where, orderBy, limit, writeBatch;
 let mktList, mktDef, lineSuggest, buildPick, evalTip, otFlag;
 let bootError = null;
+/* Önjavító importálás: ha egy fájl nem töltődik be (elakadt gyorsítótár / régi service worker), újrapróbálja
+   gyorsítótár-kerülő paraméterrel, végül törli a service workert és a mentett fájlokat, majd egyszer újratölt. */
+const vgImp = async u => {
+  try { return await import(u); } catch (e1) {
+    try { return await import(u + (u.includes('?') ? '&' : '?') + 'r=' + Date.now()); } catch (e2) {
+      try {
+        if (!sessionStorage.getItem('vgHeal')) {
+          sessionStorage.setItem('vgHeal', '1');
+          const rs = (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) ? await navigator.serviceWorker.getRegistrations() : [];
+          await Promise.all(rs.map(r => r.unregister()));
+          if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); }
+          location.reload(); await new Promise(() => { });
+        }
+      } catch (x) { }
+      throw e2;
+    }
+  }
+};
+window.vgReset = async () => {
+  try { const rs = (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) ? await navigator.serviceWorker.getRegistrations() : []; await Promise.all(rs.map(r => r.unregister())); } catch (x) { }
+  try { if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.map(k => caches.delete(k))); } } catch (x) { }
+  try { sessionStorage.removeItem('vgHeal'); } catch (x) { }
+  location.reload();
+};
 try {
-  ({ firebaseConfig, discordClientId = '', discordInvite = '' } = await import('/js/firebase-config.js'));
-  ({ initializeApp } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'));
-  ({ getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, sendEmailVerification, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, verifyPasswordResetCode, confirmPasswordReset, applyActionCode } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js'));
-  ({ getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, getDocs, onSnapshot, query, where, orderBy, limit, writeBatch } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'));
-  ({ mktList, mktDef, lineSuggest, buildPick, evalTip, otFlag } = await import('/js/markets.js'));
+  ({ firebaseConfig, discordClientId = '', discordInvite = '' } = await vgImp('/js/firebase-config.js'));
+  ({ initializeApp } = await vgImp('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'));
+  ({ getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, sendEmailVerification, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, verifyPasswordResetCode, confirmPasswordReset, applyActionCode } = await vgImp('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js'));
+  ({ getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, getDocs, onSnapshot, query, where, orderBy, limit, writeBatch } = await vgImp('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'));
+  ({ mktList, mktDef, lineSuggest, buildPick, evalTip, otFlag } = await vgImp('/js/markets.js'));
+  try { sessionStorage.removeItem('vgHeal'); } catch (x) { }
 } catch (e) { bootError = e; }
 /*BOOT_END*/
 
@@ -749,7 +774,7 @@ function tippekPage() {
   }
   let LG = null;
   async function openForm(t) {
-    if (!LG) { try { LG = (await import('./leagues.js')).LEAGUES; } catch (e) { LG = {}; } }
+    if (!LG) { try { LG = (await vgImp('/js/leagues.js')).LEAGUES; } catch (e) { LG = {}; } }
     let tipsters = ADMIN_NAMES; try { const q = await getDocs(collection(db, 'admins')); const nm = q.docs.map(d => d.data().name).filter(Boolean); if (nm.length) tipsters = nm; } catch (e) { }
     const me = (profile && profile.name) || tipsters[0];
     const f = t || { sport: st.s, date: curDate(), tipster: me, status: 'pend' };
@@ -1154,13 +1179,13 @@ function settingsPage() {
 /* ---------- Updates / Chat (külön modul) + "új update" jelvény ---------- */
 async function loadCommunity() {
   try {
-    const m = await import('./community.js');
+    const m = await vgImp('/js/community.js');
     const ctx = { db, auth, user, profile, isAdmin: isAdmin(), esc, $, toast, huDate, ymd, gate, gateEvents, adminName: isAdminName };
     if (page === 'updates') m.updatesPage(ctx); else m.chatPage(ctx);
   } catch (e) { $('#main').innerHTML = infoView('⚠️', 'Betöltési hiba', esc(String((e && e.message) || e))); }
 }
 async function loadNotify() {
-  try { const m = await import('./notify.js'); m.init({ app, db, auth, user, profile, esc, $, page }); } catch (e) { }
+  try { const m = await vgImp('/js/notify.js'); m.init({ app, db, auth, user, profile, esc, $, page }); } catch (e) { }
 }
 
 
@@ -1229,7 +1254,7 @@ async function start(u) {
 
 if (bootError) {
   layout();
-  $('#main').innerHTML = `<section class="wrap narrow"><div class="panel center" style="margin-top:50px"><h1>Betöltési hiba</h1><p class="small" style="font-size:.95rem">Az oldal egy szükséges fájlt nem tudott betölteni. Valószínűleg a <b>js/firebase-config.js</b> hiányzik, vagy hibás a tartalma (az első sorának ez kell lennie: <code>export const firebaseConfig = {</code>).</p><p class="small" style="word-break:break-word;color:var(--bad)">${esc(String(bootError && bootError.message || bootError))}</p></div></section>`;
+  $('#main').innerHTML = `<section class="wrap narrow"><div class="panel center" style="margin-top:50px"><h1>Betöltési hiba</h1><p class="small" style="font-size:.95rem">Az oldal egy szükséges fájlt nem tudott betölteni. Valószínűleg a <b>js/firebase-config.js</b> hiányzik, vagy hibás a tartalma (az első sorának ez kell lennie: <code>export const firebaseConfig = {</code>).</p><p class="small" style="word-break:break-word;color:var(--bad)">${esc(String(bootError && bootError.message || bootError))}</p><p style="margin-top:18px"><button class="btn" type="button" onclick="vgReset()">Újrapróbálás (gyorsítótár törlése)</button></p></div></section>`;
 } else if (!configured) { layout(); setupBanner(); startTicker(); }
 else {
   app = initializeApp(firebaseConfig); auth = getAuth(app); auth.languageCode = 'hu'; db = getFirestore(app);

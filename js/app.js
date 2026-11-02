@@ -84,6 +84,22 @@ function showStoredFlash() { try { const f = JSON.parse(sessionStorage.getItem('
 const BEAT_MS = 5 * 60e3, ONLINE_MS = 11 * 60e3;
 
 const picOf = p => (p && typeof p.avatar === 'string' && p.avatar.startsWith('data:image/')) ? p.avatar : '';
+/* a Discord profilkép átmásolása a saját profilképbe (128×128, tömörített) */
+const dcPicData = d => new Promise((ok, no) => {
+  if (!d || !d.id || !d.avatar) return no(new Error('A Discord fiókodnak nincs profilképe.'));
+  const im = new Image(); im.crossOrigin = 'anonymous';
+  im.onerror = () => no(new Error('A Discord profilkép nem tölthető le.'));
+  im.onload = () => {
+    try {
+      const S = 128, cv = document.createElement('canvas'); cv.width = cv.height = S;
+      const cx = cv.getContext('2d'); cx.fillStyle = '#0a0d15'; cx.fillRect(0, 0, S, S); cx.imageSmoothingQuality = 'high'; cx.drawImage(im, 0, 0, S, S);
+      let out = cv.toDataURL('image/webp', .85); if (!out.startsWith('data:image/webp')) out = cv.toDataURL('image/jpeg', .85);
+      for (let q = .75; out.length > 40000 && q > .3; q -= .15) out = cv.toDataURL('image/jpeg', q);
+      out.length > 60000 ? no(new Error('A kép túl nagy.')) : ok(out);
+    } catch (x) { no(x); }
+  };
+  im.src = `https://cdn.discordapp.com/avatars/${d.id}/${d.avatar}.png?size=128`;
+});
 
 /* ---------- óra (Budapest) ---------- */
 let clockTimer = 0;
@@ -1020,9 +1036,11 @@ function settingsPage() {
       const d = profile && profile.discord;
       const url = d && d.id && d.avatar ? `https://cdn.discordapp.com/avatars/${d.id}/${d.avatar}.png?size=96` : '';
       box.innerHTML = d
-        ? `<div class="row" style="gap:14px">${url ? `<img src="${url}" alt="" style="width:52px;height:52px;border-radius:50%">` : ''}<div style="flex:1;min-width:180px"><b>${esc(d.name)}</b><br><span class="small okk">✔ Összekapcsolva</span></div><button class="btn sm danger" id="dcOff" type="button">Leválasztás</button></div>`
+        ? `<div class="row" style="gap:14px">${url ? `<img src="${url}" alt="" style="width:52px;height:52px;border-radius:50%">` : ''}<div style="flex:1;min-width:180px"><b>${esc(d.name)}</b><br><span class="small okk">✔ Összekapcsolva</span></div>${url ? '<button class="btn sm" id="dcPic" type="button">Discord kép használata</button>' : ''}<button class="btn sm danger" id="dcOff" type="button">Leválasztás</button></div>`
         : `<p class="small" style="margin:0 0 12px">Kösd össze a Discord fiókodat, hogy a VIP és a közösségi funkciók a Discord nevedhez kapcsolódjanak. Csak a felhasználóneved és profilképed kérjük le, jelszóhoz vagy üzenetekhez nem férünk hozzá.</p>${discordClientId ? '<button class="btn sm" id="dcOn" type="button">Összekapcsolás Discorddal</button>' : '<p class="small">A Discord kapcsolat még nincs beállítva: add meg a <b>discordClientId</b> értékét a js/firebase-config.js fájlban.</p>'}`;
       const on = $('#dcOn'), off = $('#dcOff');
+      const pb = $('#dcPic');
+      if (pb) pb.onclick = async () => { pb.disabled = true; try { const a = await dcPicData(d); await updateDoc(doc(db, 'users', user.uid), { avatar: a }); flashNext('A Discord profilkép beállítva.'); location.reload(); } catch (x) { toast('Nem sikerült: ' + (x.code || x.message), 'err'); pb.disabled = false; } };
       if (on) on.onclick = () => { const st = Math.random().toString(36).slice(2); sessionStorage.setItem('vg_dcst', st); location.href = 'https://discord.com/oauth2/authorize?response_type=token&client_id=' + encodeURIComponent(discordClientId) + '&scope=identify&prompt=consent&state=' + st + '&redirect_uri=' + encodeURIComponent(location.origin + '/beallitasok'); };
       if (off) off.onclick = async () => { if (!confirm('Leválasztod a Discord fiókodat?')) return; try { await updateDoc(doc(db, 'users', user.uid), { discord: null }); flashNext('A Discord leválasztva.'); location.reload(); } catch (x) { toast('Nem sikerült: ' + (x.code || x.message), 'err'); } };
     };
@@ -1036,7 +1054,9 @@ function settingsPage() {
         const r = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: 'Bearer ' + hp.get('access_token') } });
         if (!r.ok) throw new Error('Discord hiba ' + r.status);
         const u = await r.json();
-        await updateDoc(doc(db, 'users', user.uid), { discord: { id: u.id, name: u.global_name || u.username, avatar: u.avatar || '' } });
+        const upd = { discord: { id: u.id, name: u.global_name || u.username, avatar: u.avatar || '' } };
+        if (!picOf(profile)) { try { upd.avatar = await dcPicData(upd.discord); } catch (x) { } }   // ha még nincs saját képed, a Discord képed kerül át
+        await updateDoc(doc(db, 'users', user.uid), upd);
         flashNext('Discord sikeresen összekapcsolva: ' + (u.global_name || u.username)); location.reload();
       } catch (x) { toast('Nem sikerült a Discord összekapcsolás: ' + (x.code || x.message), 'err'); }
     } else if (location.hash === '#discord') box.scrollIntoView();

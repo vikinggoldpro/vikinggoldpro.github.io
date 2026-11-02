@@ -15,7 +15,7 @@
   --sh:0 14px 40px -20px rgba(40,20,80,.35);color-scheme:light}
 
 html{background:var(--bg)!important}
-body{background:var(--bg)!important;background-image:none!important;padding-left:var(--sbw);color:var(--tx)}
+body{background:transparent!important;background-image:none!important;padding-left:var(--sbw);color:var(--tx)}
 #fx,.bgfx,html::before,body::before,body::after,main::after{display:none!important;content:none!important}
 p{color:var(--ptx)}
 .g{background:none!important;color:var(--gold)!important;-webkit-text-fill-color:var(--gold)!important}
@@ -90,3 +90,24 @@ main{padding:30px 0 20px}
 /* alsó mozgó sáv eltávolítva */
 .tick{display:none!important}
 body.has-tick{padding-bottom:0!important}
+
+/* ---- téma: a style.css !important szabályainak felülírása változókkal ---- */
+.card,.panel,.tlog,.stat,.sp,.person,.sbx2,.authbox,.upd-c,.chip,.how-s,.faq details,.kpi,.vgs,.sbx,.tl,.hclock{
+  background:color-mix(in srgb,var(--sf) 78%,transparent)!important;border:1px solid var(--bd)!important;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--tx)}
+.sb{background:color-mix(in srgb,var(--sf) 88%,transparent)!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.menu,.nav{background:var(--sf)!important;border-color:var(--bd2)!important;color:var(--tx)}
+.top{background:color-mix(in srgb,var(--bg) 80%,transparent)!important;border-color:var(--bd)!important}
+.tabs a,.utag,.tab,.vtabs,.vtabs a{background:var(--sf)!important;border:1px solid var(--bd)!important;color:var(--tx)!important}
+.tabs a.on,.vtabs a.on,.nav a.on{background:var(--gold)!important;border-color:var(--gold)!important;color:#fff!important}
+input,select,textarea{background:var(--in)!important;color:var(--tx)!important;border:1px solid var(--bd2)!important}
+.btn.ghost,.btn.ghost:hover{background:var(--sf)!important;border:1px solid var(--bd2)!important;color:var(--tx)!important}
+.btn.ghost:hover{border-color:var(--gold)!important;color:var(--gold)!important}
+.banner,.banner .btn{background:var(--gold)!important;color:#fff!important}
+.banner .btn{background:#fff!important;color:var(--gold3)!important}
+.uic{background:var(--sf)!important;border-color:var(--bd)!important}
+h1,h2,h3,h4,.small b,b,strong{color:var(--tx)}
+.small,.mu{color:var(--mu)!important}
+.card:hover,.sp:hover{transform:translateY(-2px);transition:transform .2s,border-color .2s}
+:root[data-theme=light] ::-webkit-scrollbar-thumb{background:#cfc8dc}
+@media(prefers-reduced-motion:reduce){.card:hover,.sp:hover{transform:none}}

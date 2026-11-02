@@ -4,7 +4,7 @@ let getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc,
 let mktList, mktDef, lineSuggest, buildPick, evalTip, otFlag;
 let bootError = null;
 try {
-  ({ firebaseConfig, discordClientId = '', discordInvite = '' } = await import('./firebase-config.js'));
+  ({ firebaseConfig, discordClientId = '', discordInvite = '' } = await import('/js/firebase-config.js'));
   ({ initializeApp } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'));
   ({ getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, sendEmailVerification, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, verifyPasswordResetCode, confirmPasswordReset, applyActionCode } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js'));
   ({ getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, getDocs, onSnapshot, query, where, orderBy, limit, writeBatch } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'));

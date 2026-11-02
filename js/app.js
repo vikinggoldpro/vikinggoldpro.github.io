@@ -1,10 +1,10 @@
 /*BOOT_START*/
-let firebaseConfig, initializeApp, getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, sendEmailVerification, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, verifyPasswordResetCode, confirmPasswordReset, applyActionCode;
+let firebaseConfig, discordClientId = '', discordInvite = '', initializeApp, getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, sendEmailVerification, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, verifyPasswordResetCode, confirmPasswordReset, applyActionCode;
 let getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, getDocs, onSnapshot, query, where, orderBy, limit, writeBatch;
 let mktList, mktDef, lineSuggest, buildPick, evalTip, otFlag;
 let bootError = null;
 try {
-  ({ firebaseConfig } = await import('./firebase-config.js'));
+  ({ firebaseConfig, discordClientId = '', discordInvite = '' } = await import('./firebase-config.js'));
   ({ initializeApp } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js'));
   ({ getAuth, onAuthStateChanged, setPersistence, browserSessionPersistence, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, sendEmailVerification, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, verifyPasswordResetCode, confirmPasswordReset, applyActionCode } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js'));
   ({ getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc, getDoc, getDocs, onSnapshot, query, where, orderBy, limit, writeBatch } = await import('https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js'));
@@ -77,26 +77,70 @@ function layout() {
     if (document.readyState === 'complete') reg(); else window.addEventListener('load', reg);
   }
   if (!document.querySelector('link[rel=manifest]')) document.head.insertAdjacentHTML('beforeend', '<link rel="manifest" href="/manifest.webmanifest"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"><link rel="icon" type="image/png" sizes="64x64" href="/assets/favicon-64.png"><link rel="shortcut icon" href="/assets/favicon.ico"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="VikingGOLD">');
-  const nav0 = [['home', '/', 'Kezdőlap'], ['tippek', '/tippek', 'Tippek'], ['updates', '/updates', 'Updates'], ['chat', '/chat', 'Chat'], ['contact', '/elerhetosegek', 'Elérhetőségek']];
-  const nav = nav0.concat(user && (adminFlag || (profile && profile.vip)) ? [['vip', '/vip', '★ VIP']] : []);
+  const ic = d => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const IC = {
+    home: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
+    tippek: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    updates: '<path d="M4 4h16v13H8l-4 4z"/>',
+    chat: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>',
+    contact: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+    vip: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+    calc: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2"/>',
+    safe: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+    set: '<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.3l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2.3-1.3L14 3h-4l-.3 2.5a7 7 0 0 0-2.3 1.3l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .9.1 1.3l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2.3 1.3L10 21h4l.3-2.5a7 7 0 0 0 2.3-1.3l2.3 1 2-3.4-2-1.5c.1-.4.1-.9.1-1.3z"/>',
+    dc: '<path d="M7 7c3-1.3 7-1.3 10 0l2 9c-1.6 1.2-3.2 1.9-4.8 2.2l-.8-1.5c-1 .3-2.6.3-3.6 0l-.8 1.5C7.4 17.900 5.800 17.200 4.200 16z"/><circle cx="9.500" cy="12.500" r="1"/><circle cx="14.500" cy="12.500" r="1"/>',
+    out: '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/>',
+    pc: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/>',
+    moon: '<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>'
+  };
+  const main0 = [['home', '/', 'Kezdőlap'], ['tippek', '/tippek', 'Tippek'], ['updates', '/updates', 'Updates'], ['chat', '/chat', 'Chat'], ['calc', '/kalkulator', 'Kalkulátor']]
+    .concat(user && (adminFlag || (profile && profile.vip)) ? [['vip', '/vip', 'VIP Klub']] : [])
+    .concat([['contact', '/elerhetosegek', 'Elérhetőségek'], ['safe', '/felelos-jatek', 'Felelős játék']])
+    .concat(user ? [['settings', '/beallitasok', 'Beállítások']] : []);
+  const pg = { calc: 'calc', safe: 'safe', contact: 'contact' };
+  const isOn = (k, h) => page === k || location.pathname.replace(/\/$/, '') === h.replace(/\/$/, '') && h !== '/' || (h === '/' && location.pathname === '/');
+  const nm = user ? ((profile && profile.name) || user.displayName || user.email.split('@')[0]) : '';
+  const role = isAdmin() ? 'Admin' : profile && profile.vip ? 'VIP tag' : 'Tag';
+  const av = (url, fallback) => url ? `<img src="${url}" alt="">` : `<span>${esc((fallback || '?').replace(/^[_.\-]+/, '').charAt(0).toUpperCase())}</span>`;
+  const dc = profile && profile.discord;
+  const dcAv = dc && dc.id && dc.avatar ? `https://cdn.discordapp.com/avatars/${dc.id}/${dc.avatar}.png?size=64` : '';
+  const dcCard = !user ? '' : dc
+    ? `<a class="sb-acc" href="/beallitasok#discord">${av(dcAv, dc.name)}<div><b>${esc(dc.name)}</b><small class="okk">✔ Discord összekapcsolva</small></div></a>`
+    : `<a class="sb-acc" href="/beallitasok#discord"><span class="dcI">${ic(IC.dc)}</span><div><b>Discord</b><small>Nincs összekapcsolva</small></div></a>`;
   $('#hdr').innerHTML = `
-<header class="top">
-  <a class="logo" href="/" aria-label="VikingGOLD"><span class="mark"><img src="/assets/logo.webp" alt="" width="46" height="46" style="display:block;width:46px;height:46px;object-fit:contain"></span><span class="wm">Viking<b>GOLD</b></span></a>
-  <button class="burger" id="burger" aria-label="Menü" aria-expanded="false"><i></i><i></i><i></i></button>
-  <nav class="nav" id="nav">${nav.map(([k, h, l]) => `<a href="${h}" class="${page === k ? 'on' : ''}">${l}</a>`).join('')}</nav>
-  <div class="clk" id="clk" aria-label="Pontos idő (Budapest)"><b id="clkT">--:--</b><small id="clkD"></small></div>
-  <div class="usr" id="usr"><button class="uic" id="uic" aria-haspopup="true" aria-expanded="false" aria-label="Fiók">${picOf(profile) ? `<img src="${picOf(profile)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block">` : `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.2 3.6-7 8-7s8 2.8 8 7"/></svg>`}${user ? '<i class="dot"></i>' : ''}</button>
-    <div class="menu" id="umenu" hidden>${user
-      ? `<div class="who"><span>${esc((profile && profile.name) || user.displayName || user.email.split('@')[0])}</span><small>${isAdmin() ? 'Admin' : profile && profile.vip ? 'VIP tag' : 'Tag'}</small></div><a href="/tippek">Tippek</a>${isAdmin() || (profile && profile.vip) ? '<a href="/vip" style="color:#d4a93c;font-weight:700">★ VIP Klub</a>' : ''}<a href="/beallitasok">${isAdmin() ? 'Beállítások / Tagkezelés' : 'Beállítások'}</a><a href="#" id="logout">Kijelentkezés</a>`
-      : '<a href="/auth?mode=login">Belépés</a><a href="/auth?mode=register">Regisztráció</a>'}</div></div>
-</header>`;
-  $('#ftr').innerHTML = `<footer class="foot"><div class="wrap"><div><b>Viking<span class="g">GOLD</span></b><p>Labdarúgás, jégkorong, kézilabda, kosárlabda és tenisz tippek.</p></div><div class="fl"><a href="/">Kezdőlap</a><a href="/tippek">Tippek</a><a href="/updates">Updates</a><a href="/chat">Chat</a><a href="/felelos-jatek">Felelős játék</a><a href="/elerhetosegek">Elérhetőségek</a></div><p class="small">A tippek nem garantálnak nyereményt. A fogadás kockázattal jár – csak annyit tegyél fel, amennyit megengedhetsz magadnak. 18 év alatt tilos. Segítség: Lelki Elsősegély Telefonszolgálat, 116-123 (ingyenes, 0–24). <a href="/felelos-jatek">Felelős játék</a>.</p></div></footer>`;
+<button class="sb-open" id="sbOpen" aria-label="Menü" aria-expanded="false">${ic('<path d="M4 6h16M4 12h16M4 18h16"/>')}</button>
+<div class="sb-scrim" id="sbScrim"></div>
+<aside class="sb" id="sb" aria-label="Fő navigáció">
+  <a class="sb-brand" href="/"><img src="/assets/logo.webp" alt="" width="36" height="36"><div><b>VikingGOLD</b><small>Irányítópult</small></div></a>
+  <div class="sb-scroll">
+    <div class="sb-h">Főmenü</div>
+    <nav class="sb-nav">${main0.map(([k, h, l]) => `<a href="${h}" class="${isOn(k, h) ? 'on' : ''}">${ic(IC[k] || IC.home)}<span>${l}</span></a>`).join('')}</nav>
+    <div class="sb-h">Gyors elérés</div>
+    <nav class="sb-nav">
+      <a href="${esc(discordInvite || '/elerhetosegek')}" ${discordInvite ? 'target="_blank" rel="noopener"' : ''}>${ic(IC.dc)}<span>Discord szerver</span></a>
+      ${user ? '' : `<a href="/auth?mode=login">${ic(IC.out)}<span>Belépés</span></a><a href="/auth?mode=register">${ic(IC.vip)}<span>Ingyenes regisztráció</span></a>`}
+    </nav>
+  </div>
+  <div class="sb-bot">
+    ${dcCard}
+    ${user ? `<div class="sb-user"><a href="/beallitasok" class="sb-ava">${av(picOf(profile), nm)}</a><div class="sb-un"><b>${esc(nm)}</b><small>${role}</small></div><button id="logout" class="sb-ico" aria-label="Kijelentkezés" title="Kijelentkezés">${ic(IC.out)}</button></div>` : ''}
+    <div class="sb-theme"><span>Téma</span><div class="seg" id="thSeg">
+      <button type="button" data-th="auto" aria-label="Rendszer" title="Rendszer szerint">${ic(IC.pc)}</button>
+      <button type="button" data-th="light" aria-label="Világos" title="Világos">${ic(IC.sun)}</button>
+      <button type="button" data-th="dark" aria-label="Sötét" title="Sötét">${ic(IC.moon)}</button></div></div>
+  </div>
+</aside>`;
+  $('#ftr').innerHTML = `<footer class="foot"><div class="wrap"><p class="small">A tippek nem garantálnak nyereményt. A fogadás kockázattal jár – csak annyit tegyél fel, amennyit megengedhetsz magadnak. 18 év alatt tilos. Segítség: Lelki Elsősegély Telefonszolgálat, 116-123 (ingyenes, 0–24). <a href="/felelos-jatek">Felelős játék</a>.</p></div></footer>`;
   startClock();
-  // menü viselkedés
-  const uic = $('#uic'), um = $('#umenu'), bg = $('#burger'), nv = $('#nav');
-  uic.onclick = e => { e.stopPropagation(); um.hidden = !um.hidden; uic.setAttribute('aria-expanded', String(!um.hidden)); };
-  document.onclick = e => { if (!um.hidden && !um.contains(e.target)) um.hidden = true; };
-  bg.onclick = () => { const o = nv.classList.toggle('open'); bg.setAttribute('aria-expanded', String(o)); };
+  const sb = $('#sb'), so = $('#sbOpen'), sc = $('#sbScrim');
+  const tgl = o => { sb.classList.toggle('open', o); sc.classList.toggle('open', o); so.setAttribute('aria-expanded', String(o)); };
+  so.onclick = () => tgl(!sb.classList.contains('open')); sc.onclick = () => tgl(false);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') tgl(false); });
+  const cur = () => localStorage.getItem('vg_theme') || 'auto';
+  const mark = () => document.querySelectorAll('#thSeg button').forEach(b => b.classList.toggle('on', b.dataset.th === cur()));
+  document.querySelectorAll('#thSeg button').forEach(b => b.onclick = () => { try { localStorage.setItem('vg_theme', b.dataset.th); } catch (e) { } window.vgTheme && window.vgTheme(); mark(); });
+  mark();
   const lo = $('#logout'); if (lo) lo.onclick = async e => { e.preventDefault(); await signOut(auth); flashNext('Sikeresen kijelentkeztél.'); location.href = '/'; };
 }
 
@@ -915,6 +959,8 @@ function settingsPage() {
       <div style="flex:1;min-width:220px"><p class="small" style="margin:0 0 10px">Ezt a képet látja mindenki a chatben, a tagok listáján és a kezdőlapon. Bármilyen képet választhatsz, a közepét négyzetre vágjuk és lekicsinyítjük.</p>
       <div class="row"><label class="btn sm ghost" for="picFile" style="margin:0;cursor:pointer">Kép kiválasztása</label><input id="picFile" type="file" accept="image/*" hidden>
       <button class="btn sm" id="picSave" type="button" disabled>Mentés</button><button class="btn sm danger" id="picDel" type="button">Eltávolítás</button></div></div></div></div>
+  <div class="card" id="discord"><h2>Discord összekapcsolás</h2>
+    <div id="dcBody"></div></div>
   <div class="g2" style="align-items:start">
     <div class="card"><h2>Fiók</h2>
       <p style="margin:0 0 4px"><span class="small">E-mail</span><br><b>${esc(user.email)}</b> ${user.emailVerified || admin ? '<span class="pill g">megerősítve</span>' : '<span class="pill y">nincs megerősítve</span>'}</p>
@@ -932,6 +978,35 @@ function settingsPage() {
     <p class="hint" style="margin:12px 0 0">A „Név” gomb átírja a tag felhasználónevét. Más jelszavát biztonsági okból nem lehet közvetlenül beállítani: a „Jelszó-mail” gomb levelet küld a tagnak, amiben ő választ újat (a link 5 percig érvényes, és csak a legutóbb kért levél működik). A „Törlés” eltávolítja a profilját és letiltja a hozzáférését (a neve felszabadul). A bejelentkezési adata a Firebase Console → Authentication → Users listán egy kattintással véglegesen is törölhető.</p></div>` : ''}
   </section>`;
   showStoredFlash();
+
+  /* Discord összekapcsolás (OAuth implicit, csak "identify") */
+  (async () => {
+    const box = $('#dcBody'); if (!box) return;
+    const draw = () => {
+      const d = profile && profile.discord;
+      const url = d && d.id && d.avatar ? `https://cdn.discordapp.com/avatars/${d.id}/${d.avatar}.png?size=96` : '';
+      box.innerHTML = d
+        ? `<div class="row" style="gap:14px">${url ? `<img src="${url}" alt="" style="width:52px;height:52px;border-radius:50%">` : ''}<div style="flex:1;min-width:180px"><b>${esc(d.name)}</b><br><span class="small okk">✔ Összekapcsolva</span></div><button class="btn sm danger" id="dcOff" type="button">Leválasztás</button></div>`
+        : `<p class="small" style="margin:0 0 12px">Kösd össze a Discord fiókodat, hogy a VIP és a közösségi funkciók a Discord nevedhez kapcsolódjanak. Csak a felhasználóneved és profilképed kérjük le, jelszóhoz vagy üzenetekhez nem férünk hozzá.</p>${discordClientId ? '<button class="btn sm" id="dcOn" type="button">Összekapcsolás Discorddal</button>' : '<p class="small">A Discord kapcsolat még nincs beállítva: add meg a <b>discordClientId</b> értékét a js/firebase-config.js fájlban.</p>'}`;
+      const on = $('#dcOn'), off = $('#dcOff');
+      if (on) on.onclick = () => { const st = Math.random().toString(36).slice(2); sessionStorage.setItem('vg_dcst', st); location.href = 'https://discord.com/oauth2/authorize?response_type=token&client_id=' + encodeURIComponent(discordClientId) + '&scope=identify&prompt=consent&state=' + st + '&redirect_uri=' + encodeURIComponent(location.origin + '/beallitasok'); };
+      if (off) off.onclick = async () => { if (!confirm('Leválasztod a Discord fiókodat?')) return; try { await updateDoc(doc(db, 'users', user.uid), { discord: null }); flashNext('A Discord leválasztva.'); location.reload(); } catch (x) { toast('Nem sikerült: ' + (x.code || x.message), 'err'); } };
+    };
+    draw();
+    const hp = new URLSearchParams(location.hash.replace(/^#/, ''));
+    if (hp.get('access_token')) {
+      history.replaceState(null, '', location.pathname);
+      if (hp.get('state') !== sessionStorage.getItem('vg_dcst')) { toast('A Discord összekapcsolás érvénytelen (state).', 'err'); return; }
+      sessionStorage.removeItem('vg_dcst');
+      try {
+        const r = await fetch('https://discord.com/api/users/@me', { headers: { Authorization: 'Bearer ' + hp.get('access_token') } });
+        if (!r.ok) throw new Error('Discord hiba ' + r.status);
+        const u = await r.json();
+        await updateDoc(doc(db, 'users', user.uid), { discord: { id: u.id, name: u.global_name || u.username, avatar: u.avatar || '' } });
+        flashNext('Discord sikeresen összekapcsolva: ' + (u.global_name || u.username)); location.reload();
+      } catch (x) { toast('Nem sikerült a Discord összekapcsolás: ' + (x.code || x.message), 'err'); }
+    } else if (location.hash === '#discord') box.scrollIntoView();
+  })();
 
   /* profilkép */
   let newPic = '';

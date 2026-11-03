@@ -1,18 +1,22 @@
 /* VikingGOLD – Pro felület: oldalsáv + világos/sötét téma (a style.css UTÁN töltődik) */
 :root,:root[data-theme=dark]{
-  --bg:#09070f;--bg2:#0e0b16;--sf:#14111d;--sf2:#1b1727;--in:#0b0911;
-  --bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);
-  --tx:#f4f2f8;--mu:#9d97ad;--mu2:#6d667e;
-  --gold:#ff7a1a;--gold2:#ffb070;--gold3:#e55f00;--warn:#ff7a1a;
-  --ok:#22c55e;--bad:#ff5468;--hov:rgba(255,255,255,.06);--ptx:#cfcbd9;
-  --sbw:264px;--sh:0 18px 50px -18px rgba(0,0,0,.8);color-scheme:dark}
+  --bg:#050a15;--bg2:#08101f;--sf:#0b1529;--sf2:#102040;--in:#07101f;
+  --bd:rgba(147,197,253,.14);--bd2:rgba(147,197,253,.28);
+  --tx:#f5f9ff;--mu:#a9bbd6;--mu2:#7d92b3;
+  --gold:#7dd3fc;--gold2:#bae6fd;--gold3:#38bdf8;--warn:#fbbf24;
+  --ok:#34d399;--bad:#ff6b81;--hov:rgba(147,197,253,.09);--ptx:#d3e0f4;
+  --btn:#7dd3fc;--btnx:#04112a;--vipc:#fcd34d;
+  --c1:#7dd3fc;--c2:#e0f2fe;--c3:#a5b4fc;--c4:#5eead4;--c5:#93c5fd;
+  --sbw:264px;--sh:0 18px 50px -18px rgba(0,0,0,.85);color-scheme:dark}
 :root[data-theme=light]{
-  --bg:#f5f3f8;--bg2:#ece9f2;--sf:#ffffff;--sf2:#f1eef6;--in:#ffffff;
-  --bd:rgba(30,20,50,.09);--bd2:rgba(30,20,50,.17);
-  --tx:#17121f;--mu:#675f78;--mu2:#8f88a0;
-  --gold:#e8620a;--gold2:#c24f00;--gold3:#a84300;--warn:#e8620a;
-  --ok:#14934a;--bad:#d62c46;--hov:rgba(30,20,50,.06);--ptx:#3d3550;
-  --sh:0 14px 40px -20px rgba(40,20,80,.35);color-scheme:light}
+  --bg:#eaf3fe;--bg2:#dfecfb;--sf:#ffffff;--sf2:#f1f7ff;--in:#ffffff;
+  --bd:rgba(15,40,90,.13);--bd2:rgba(15,40,90,.26);
+  --tx:#0a1630;--mu:#46597a;--mu2:#64779a;
+  --gold:#0b63c5;--gold2:#0a4da0;--gold3:#083f85;--warn:#b45309;
+  --ok:#0f8a5f;--bad:#c81e3a;--hov:rgba(11,99,197,.08);--ptx:#26385a;
+  --btn:#0b63c5;--btnx:#ffffff;--vipc:#92400e;
+  --c1:#0b63c5;--c2:#0e7490;--c3:#4f46e5;--c4:#0f766e;--c5:#1d4ed8;
+  --sh:0 14px 40px -20px rgba(10,40,100,.35);color-scheme:light}
 
 html{background:var(--bg)!important}
 body{background:transparent!important;background-image:none!important;padding-left:var(--sbw);color:var(--tx)}
@@ -20,7 +24,7 @@ body{background:transparent!important;background-image:none!important;padding-le
 p{color:var(--ptx)}
 .g{background:none!important;color:var(--gold)!important;-webkit-text-fill-color:var(--gold)!important}
 h1{text-shadow:none}
-::selection{background:rgba(255,122,26,.35)}
+::selection{background:rgba(125,211,252,.35)}
 .btn{background:var(--gold)!important;color:#fff!important;box-shadow:none!important;border-radius:10px}
 .btn:hover{background:var(--gold3)!important;box-shadow:0 8px 22px -10px var(--gold)!important}
 .btn.ghost{background:var(--sf)!important;border-color:var(--bd2)!important;color:var(--tx)!important}
@@ -109,5 +113,169 @@ input,select,textarea{background:var(--in)!important;color:var(--tx)!important;b
 h1,h2,h3,h4,.small b,b,strong{color:var(--tx)}
 .small,.mu{color:var(--mu)!important}
 .card:hover,.sp:hover{transform:translateY(-2px);transition:transform .2s,border-color .2s}
-:root[data-theme=light] ::-webkit-scrollbar-thumb{background:#cfc8dc}
+:root[data-theme=light] ::-webkit-scrollbar-thumb{background:#b4c6e3}
 @media(prefers-reduced-motion:reduce){.card:hover,.sp:hover{transform:none}}
+
+/* =====================================================================
+   VikingGOLD – 2026 Pro design: kékes-fekete, babakék, fehér
+   (az alap-szabályok után töltődik, ezért felülír)
+   ===================================================================== */
+html{background:var(--bg)!important}
+body{font-family:Inter,system-ui,sans-serif;color:var(--tx);-webkit-font-smoothing:antialiased}
+:root[data-theme=dark] html,html[data-theme=dark]{background:radial-gradient(1100px 650px at 12% -8%,#0f2a57 0%,transparent 60%),radial-gradient(900px 600px at 100% 0%,#0a1f45 0%,transparent 55%),linear-gradient(180deg,#060d1c,#040812)!important;background-attachment:fixed!important}
+html[data-theme=light]{background:radial-gradient(1000px 600px at 10% -10%,#cfe5ff 0%,transparent 60%),radial-gradient(800px 500px at 100% 0%,#dbeafe 0%,transparent 55%),linear-gradient(180deg,#f3f8ff,#e6f0fc)!important;background-attachment:fixed!important}
+
+/* --- szövegek: mindig olvashatók, sötét és világos témában is --- */
+h1,h2,h3,h4{color:var(--tx)!important;text-shadow:none!important}
+p,li,td,th,label,summary,.lead{color:var(--ptx)}
+.hero .lead,.lead{color:var(--ptx)!important;text-shadow:none!important}
+.small,.mu,.hint,small{color:var(--mu)!important}
+b,strong{color:var(--tx)}
+a{color:var(--gold)}
+a.btn,a.btn:hover{color:var(--btnx)!important}
+.hero h1{background:linear-gradient(95deg,var(--tx) 30%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent}
+.sect-t{color:var(--tx)!important;position:relative}
+.sect-t .g{color:var(--gold)!important;-webkit-text-fill-color:var(--gold)!important}
+::selection{background:rgba(125,211,252,.4);color:inherit}
+
+/* --- gombok --- */
+.btn{background:linear-gradient(135deg,var(--btn),color-mix(in srgb,var(--btn) 70%,#fff 0%))!important;color:var(--btnx)!important;border:0!important;font-weight:700;letter-spacing:.01em;border-radius:12px!important;box-shadow:0 8px 24px -12px var(--gold)!important;transition:transform .18s,box-shadow .18s,filter .18s}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 14px 30px -12px var(--gold)!important}
+.btn.ghost,.btn.ghost:hover{background:color-mix(in srgb,var(--sf) 80%,transparent)!important;color:var(--tx)!important;border:1px solid var(--bd2)!important;box-shadow:none!important}
+.btn.ghost:hover{border-color:var(--gold)!important;color:var(--gold)!important}
+.btn.danger,.btn.danger:hover{background:transparent!important;color:var(--bad)!important;border:1px solid color-mix(in srgb,var(--bad) 55%,transparent)!important;box-shadow:none!important}
+.btn.danger:hover{background:color-mix(in srgb,var(--bad) 14%,transparent)!important}
+.btn[disabled],.btn:disabled{opacity:.5;transform:none;cursor:not-allowed}
+
+/* --- kártyák: üveg + színes felső csík --- */
+.card,.panel,.tlog,.stat,.sp,.person,.sbx2,.authbox,.how-s,.faq details,.kpi,.vgs,.sbx,.tl,.hclock{
+  background:color-mix(in srgb,var(--sf) 84%,transparent)!important;border:1px solid var(--bd)!important;border-radius:20px!important;
+  box-shadow:var(--sh)!important;color:var(--tx)}
+.card:hover,.sp:hover{border-color:var(--bd2)!important}
+.banner{background:linear-gradient(120deg,#0b3d8f,#0b63c5 55%,#38bdf8)!important;color:#fff!important;border-radius:22px!important;border:0!important}
+.banner h3,.banner p{color:#fff!important}
+.banner .btn{background:#fff!important;color:#0a2a66!important}
+.banner .btn.ghost{background:rgba(255,255,255,.14)!important;color:#fff!important;border:1px solid rgba(255,255,255,.5)!important}
+
+/* külön szín mindegyik elemnek */
+.stats .stat{position:relative;overflow:hidden}
+.stats .stat::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--c,var(--gold));opacity:1!important}
+.stats .stat b{color:var(--c,var(--gold))!important;-webkit-text-fill-color:var(--c,var(--gold))!important;background:none!important}
+.stats .stat:nth-child(1){--c:var(--c1)}.stats .stat:nth-child(2){--c:var(--c3)}.stats .stat:nth-child(3){--c:var(--c4)}.stats .stat:nth-child(4){--c:var(--c5)}
+.sports .sp:nth-child(5n+1){--c:var(--c1)}.sports .sp:nth-child(5n+2){--c:var(--c3)}.sports .sp:nth-child(5n+3){--c:var(--c4)}.sports .sp:nth-child(5n+4){--c:var(--c5)}.sports .sp:nth-child(5n+5){--c:var(--c2)}
+.sp{position:relative;transition:transform .22s,border-color .22s,box-shadow .22s}
+.sp .e{display:grid;place-items:center;width:62px;height:62px;border-radius:18px;font-size:1.9rem;margin:0 auto 4px;background:color-mix(in srgb,var(--c,var(--gold)) 18%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c,var(--gold)) 45%,transparent)}
+.sp:hover{transform:translateY(-6px);border-color:var(--c,var(--gold))!important;box-shadow:0 26px 50px -26px var(--c,var(--gold))!important}
+.sp small{color:var(--c,var(--gold))!important;font-weight:700}
+.how .how-s:nth-child(1){--c:var(--c1)}.how .how-s:nth-child(2){--c:var(--c3)}.how .how-s:nth-child(3){--c:var(--c4)}
+.how-s i{background:var(--c,var(--gold))!important;color:var(--btnx)!important;font-style:normal;font-weight:800}
+.how-s{border-top:3px solid var(--c,var(--gold))!important}
+.faq details{border-left:3px solid var(--c1)!important}.faq details:nth-child(3n+2){border-left-color:var(--c3)!important}.faq details:nth-child(3n){border-left-color:var(--c4)!important}
+.faq summary{color:var(--tx)!important;font-weight:700}
+
+/* chipek / pillek: olvashatók világos háttéren is */
+.chip{color:var(--tx)!important;background:color-mix(in srgb,var(--sf2) 80%,transparent)!important;border:1px solid var(--bd2)!important}
+.chip.adm{border-color:var(--c1)!important;background:color-mix(in srgb,var(--c1) 14%,transparent)!important}
+.chip.adm i{color:var(--gold)!important}
+.chip.vipc{border-color:var(--vipc)!important;background:color-mix(in srgb,var(--vipc) 14%,transparent)!important;color:var(--vipc)!important;box-shadow:none!important}
+.chip.vipc i{color:var(--vipc)!important}
+.pill{color:var(--gold)!important;background:color-mix(in srgb,var(--gold) 12%,transparent)!important;border:1px solid color-mix(in srgb,var(--gold) 50%,transparent)!important}
+.pill.g{color:var(--ok)!important;background:color-mix(in srgb,var(--ok) 13%,transparent)!important;border-color:color-mix(in srgb,var(--ok) 50%,transparent)!important}
+.pill.y{color:var(--warn)!important;background:color-mix(in srgb,var(--warn) 13%,transparent)!important;border-color:color-mix(in srgb,var(--warn) 50%,transparent)!important}
+.pill.r{color:var(--bad)!important;background:color-mix(in srgb,var(--bad) 13%,transparent)!important;border-color:color-mix(in srgb,var(--bad) 50%,transparent)!important}
+.pill.v{color:var(--c3)!important;background:color-mix(in srgb,var(--c3) 15%,transparent)!important;border-color:color-mix(in srgb,var(--c3) 55%,transparent)!important}
+.pill.vip{color:var(--vipc)!important;background:color-mix(in srgb,var(--vipc) 14%,transparent)!important;border-color:color-mix(in srgb,var(--vipc) 55%,transparent)!important}
+.okk{color:var(--ok)!important}
+
+/* táblázatok / űrlapok */
+table{color:var(--tx)}th{color:var(--mu)!important;font-weight:700}td{color:var(--tx)!important}
+tr{border-color:var(--bd)!important}
+input,select,textarea{background:var(--in)!important;color:var(--tx)!important;border:1px solid var(--bd2)!important;border-radius:12px!important}
+input::placeholder,textarea::placeholder{color:var(--mu2)!important;opacity:1}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 25%,transparent)!important;outline:0}
+.tabs a,.utag,.tab,.vtabs,.vtabs a{color:var(--tx)!important}
+.tabs a.on,.vtabs a.on,.nav a.on,.tab.on{background:var(--btn)!important;border-color:var(--btn)!important;color:var(--btnx)!important}
+.nav a{color:var(--tx)!important}
+.tag,.ti{color:var(--tx)}
+.ok,.win{color:var(--ok)}.bad,.loss{color:var(--bad)}
+
+/* --- oldalsáv --- */
+.sb{background:color-mix(in srgb,var(--sf) 90%,transparent)!important;border:1px solid var(--bd2)!important;box-shadow:var(--sh)}
+.sb-brand b{color:var(--tx)!important;font-family:Sora,Inter,sans-serif;letter-spacing:-.02em}
+.sb-brand small{color:var(--gold)!important;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.64rem}
+.sb-h{color:var(--mu)!important;text-transform:uppercase;letter-spacing:.1em;font-size:.66rem!important}
+.sb-nav a{color:var(--ptx)!important;font-weight:600}
+.sb-nav a svg{color:var(--c,var(--gold))}
+.sb-nav a:nth-child(5n+1){--c:var(--c1)}.sb-nav a:nth-child(5n+2){--c:var(--c3)}.sb-nav a:nth-child(5n+3){--c:var(--c4)}.sb-nav a:nth-child(5n+4){--c:var(--c5)}.sb-nav a:nth-child(5n+5){--c:var(--c2)}
+.sb-nav a:hover{background:var(--hov)!important;color:var(--tx)!important}
+.sb-nav a.on{background:color-mix(in srgb,var(--c,var(--gold)) 16%,transparent)!important;color:var(--tx)!important;box-shadow:inset 3px 0 0 var(--c,var(--gold))}
+.sb-nav.adm-nav a{--c:var(--vipc);background:color-mix(in srgb,var(--vipc) 10%,transparent);border:1px solid color-mix(in srgb,var(--vipc) 40%,transparent);color:var(--tx)!important}
+.sb-nav.adm-nav a svg{color:var(--vipc)}
+.sb-nav.adm-nav a.on{box-shadow:inset 3px 0 0 var(--vipc)}
+.sb-acc{background:var(--bg2)!important}.sb-acc b,.sb-un b{color:var(--tx)!important}.sb-acc small,.sb-un small{color:var(--mu)!important}
+.seg button.on{background:var(--btn)!important;color:var(--btnx)!important}
+.sb-open{background:var(--sf)!important;color:var(--tx)!important}
+
+/* --- tagkezelés --- */
+.mm-top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:6px 0 16px}
+.mm-top h1{margin:0}.mm-cnt{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.mm-cnt span{padding:6px 12px;border-radius:999px;font-size:.78rem;font-weight:700;border:1px solid var(--bd2);background:var(--sf);color:var(--tx)}
+.mm-cnt span b{color:var(--gold)}
+.mm-list{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.mm-row{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:16px;border:1px solid var(--bd);background:color-mix(in srgb,var(--sf) 86%,transparent);cursor:pointer;transition:border-color .15s,transform .15s,background .15s}
+.mm-row:hover{border-color:var(--gold);transform:translateX(3px);background:var(--sf2)}
+.mm-row:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.mm-av{position:relative;flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:var(--btnx);background:linear-gradient(135deg,var(--c1),var(--c3))}
+.mm-av img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.mm-av i{position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;border-radius:50%;background:var(--ok);border:2px solid var(--sf);box-shadow:0 0 8px var(--ok)}
+.mm-id{flex:1;min-width:0}.mm-id b{display:block;font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mm-id span{display:block;font-size:.82rem;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mm-q{display:flex;gap:6px;flex:none}
+.mm-q button{background:var(--sf2);border:1px solid var(--bd2);color:var(--tx);border-radius:10px;padding:6px 10px;font:600 .74rem Inter,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:.15s}
+.mm-q button:hover{border-color:var(--gold);color:var(--gold)}
+.mm-q button.on{border-color:#5865f2;color:#fff;background:#5865f2}
+.mm-q svg{width:14px;height:14px}
+@media(max-width:620px){.mm-q span{display:none}.mm-row{gap:10px;padding:10px}}
+.mm-scrim{position:fixed;inset:0;z-index:100;background:rgba(2,6,16,.72);backdrop-filter:blur(6px);display:grid;place-items:center;padding:16px;animation:mmf .18s ease}
+.mm-modal{width:min(560px,100%);max-height:92vh;overflow:auto;border-radius:26px;background:var(--sf);border:1px solid var(--bd2);box-shadow:0 40px 90px -30px #000;animation:mmu .22s cubic-bezier(.2,.8,.2,1)}
+.mm-hd{position:relative;padding:26px 24px 18px;display:flex;gap:16px;align-items:center;background:linear-gradient(135deg,color-mix(in srgb,var(--c1) 22%,transparent),color-mix(in srgb,var(--c3) 16%,transparent));border-bottom:1px solid var(--bd)}
+.mm-hd .mm-av{width:72px;height:72px;font-size:1.8rem}
+.mm-hd h2{margin:0 0 6px;font-size:1.35rem}
+.mm-x{position:absolute;right:14px;top:14px;width:34px;height:34px;border-radius:50%;border:1px solid var(--bd2);background:var(--sf);color:var(--tx);cursor:pointer;font-size:1.1rem;line-height:1}
+.mm-x:hover{border-color:var(--bad);color:var(--bad)}
+.mm-bd{padding:6px 24px 8px}
+.mm-kv{display:grid;grid-template-columns:130px 1fr;gap:6px 14px;padding:12px 0;border-bottom:1px solid var(--bd);align-items:center;font-size:.92rem}
+.mm-kv:last-child{border:0}.mm-kv>span:first-child{color:var(--mu);font-weight:600;font-size:.82rem}
+.mm-kv>span:last-child{color:var(--tx);word-break:break-word}
+.mm-ft{padding:14px 24px 22px;display:flex;flex-wrap:wrap;gap:8px}
+.mm-ft .btn{padding:9px 14px;font-size:.82rem}
+@keyframes mmf{from{opacity:0}}@keyframes mmu{from{opacity:0;transform:translateY(16px) scale(.98)}}
+
+/* --- VIP rész a főoldalon --- */
+.vh{margin:34px 0 8px;border-radius:26px;border:1px solid color-mix(in srgb,var(--vipc) 45%,transparent);background:linear-gradient(135deg,color-mix(in srgb,var(--vipc) 9%,var(--sf)),color-mix(in srgb,var(--c3) 10%,var(--sf)));padding:22px;box-shadow:var(--sh)}
+.vh-hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.vh-hd h2{margin:0;font-size:1.5rem}.vh-hd h2 span{color:var(--vipc)}
+.vh-hd .btn{margin-left:auto;padding:9px 16px;font-size:.84rem}
+.vh-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.vh-sum div{padding:12px 14px;border-radius:14px;background:var(--sf);border:1px solid var(--bd);border-top:3px solid var(--c,var(--gold))}
+.vh-sum div:nth-child(1){--c:var(--c1)}.vh-sum div:nth-child(2){--c:var(--c3)}.vh-sum div:nth-child(3){--c:var(--c4)}.vh-sum div:nth-child(4){--c:var(--vipc)}
+.vh-sum b{display:block;font-size:1.45rem;font-family:Sora,Inter,sans-serif;color:var(--c)!important}
+.vh-sum span{font-size:.7rem;font-weight:700;letter-spacing:.08em;color:var(--mu);text-transform:uppercase}
+.vh-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.vh-tabs button{border:1px solid var(--bd2);background:var(--sf);color:var(--tx);font:600 .82rem Inter,sans-serif;padding:7px 14px;border-radius:999px;cursor:pointer}
+.vh-tabs button.on{background:var(--btn);color:var(--btnx);border-color:var(--btn)}
+.vh-tip{display:grid;grid-template-columns:5px 1fr auto;gap:14px;align-items:center;padding:13px 16px;border-radius:16px;background:var(--sf);border:1px solid var(--bd);margin-bottom:8px}
+.vh-tip .st{align-self:stretch;border-radius:5px;background:var(--c1)}
+.vh-tip.win .st{background:var(--ok)}.vh-tip.loss .st{background:var(--bad)}.vh-tip.void .st{background:var(--mu2)}
+.vh-m{font-size:.72rem;color:var(--mu);font-weight:600;letter-spacing:.03em;margin-bottom:2px}
+.vh-t{font:700 1rem Sora,Inter,sans-serif;color:var(--tx)}
+.vh-p{font-size:.88rem;margin-top:4px;color:var(--ptx)}.vh-p b{color:var(--gold)}
+.vh-r{text-align:right}.vh-r .o{font:800 1.2rem Sora,Inter,sans-serif;color:var(--gold)}
+.vh-r .pill{margin-top:4px}
+.vh-empty{padding:22px;text-align:center;color:var(--mu);border:1px dashed var(--bd2);border-radius:16px}
+@media(max-width:700px){.vh{padding:16px}.vh-sum{grid-template-columns:1fr 1fr}.vh-tip{grid-template-columns:5px 1fr}.vh-r{grid-column:2;text-align:left;display:flex;gap:12px;align-items:center}}
+
+/* animált háttér-vászon */
+#vgbg{opacity:1}
+.foot,.foot p,.foot .small{color:var(--mu)!important}
+@media(prefers-reduced-motion:reduce){.mm-row:hover,.sp:hover,.btn:hover{transform:none}.mm-scrim,.mm-modal{animation:none}}

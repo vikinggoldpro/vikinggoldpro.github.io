@@ -55,15 +55,12 @@ const MONTHS = ['', 'január', 'február', 'március', 'április', 'május', 'j�
 const huDate = s => { const d = new Date(s + 'T12:00:00'); return isNaN(d) ? s : `${d.getFullYear()}. ${MONTHS[d.getMonth() + 1]} ${d.getDate()}., ${DAYS[d.getDay()]}`; };
 /* ---------- téma + animált háttér ---------- */
 (function () {
-  const get = () => { try { return localStorage.getItem('vg_theme') || 'auto'; } catch (e) { return 'auto'; } };
-  const apply = () => {
-    const t = get(), r = t === 'auto' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : t;
-    document.documentElement.setAttribute('data-theme', r);
-    const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = r === 'light' ? '#f5f3f8' : '#09070f';
+  const apply = () => {   // egyetlen téma: kékes-fekete, babakék
+    document.documentElement.setAttribute('data-theme', 'dark');
+    const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = '#050a15';
   };
   window.vgTheme = apply; apply();
-  try { matchMedia('(prefers-color-scheme: light)').addEventListener('change', apply); } catch (e) { }
-  const sc = document.createElement('script'); sc.src = '/assets/bg.js?v=20261102e'; sc.defer = true; document.head.appendChild(sc);
+  const sc = document.createElement('script'); sc.src = '/js/bg.js?v=20261103a'; sc.defer = true; document.head.appendChild(sc);
 })();
 const page = document.body.dataset.page;
 const params = new URLSearchParams(location.search);
@@ -142,6 +139,7 @@ function layout() {
     safe: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
     set: '<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.3l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2.3-1.3L14 3h-4l-.3 2.5a7 7 0 0 0-2.3 1.3l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .9.1 1.3l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2.3 1.3L10 21h4l.3-2.5a7 7 0 0 0 2.3-1.3l2.3 1 2-3.4-2-1.5c.1-.4.1-.9.1-1.3z"/>',
     dc: '<path d="M7 7c3-1.3 7-1.3 10 0l2 9c-1.6 1.2-3.2 1.9-4.8 2.2l-.8-1.5c-1 .3-2.6.3-3.6 0l-.8 1.5C7.4 17.900 5.800 17.200 4.200 16z"/><circle cx="9.500" cy="12.500" r="1"/><circle cx="14.500" cy="12.500" r="1"/>',
+    users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.900 1.900 6.500 5.500"/><path d="M16 4.500a3.500 3.500 0 0 1 0 7M18 14.800c1.800.7 3 2.400 3.500 5.200"/>',
     out: '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/>',
     pc: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
     sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/>',
@@ -167,6 +165,7 @@ function layout() {
 <aside class="sb" id="sb" aria-label="Fő navigáció">
   <a class="sb-brand" href="/"><img src="/assets/logo.webp" alt="" width="36" height="36"><div><b>VikingGOLD</b><small>Irányítópult</small></div></a>
   <div class="sb-scroll">
+    ${isAdmin() ? `<div class="sb-h">Admin</div><nav class="sb-nav adm-nav"><a href="/tagkezeles" class="${isOn('members', '/tagkezeles') ? 'on' : ''}">${ic(IC.users)}<span>Tagkezelés</span></a></nav>` : ''}
     <div class="sb-h">Főmenü</div>
     <nav class="sb-nav">${main0.map(([k, h, l]) => `<a href="${h}" class="${isOn(k, h) ? 'on' : ''}">${ic(IC[k] || IC.home)}<span>${l}</span></a>`).join('')}</nav>
     ${user ? '' : `<div class="sb-h">Gyors elérés</div>
@@ -175,10 +174,6 @@ function layout() {
   <div class="sb-bot">
     ${dcCard}
     ${user ? `<div class="sb-user"><a href="/beallitasok" class="sb-ava">${av(picOf(profile), nm)}</a><div class="sb-un"><b>${esc(nm)}</b><small>${role}</small></div><button id="logout" class="sb-ico" aria-label="Kijelentkezés" title="Kijelentkezés">${ic(IC.out)}</button></div>` : ''}
-    <div class="sb-theme"><span>Téma</span><div class="seg" id="thSeg">
-      <button type="button" data-th="auto" aria-label="Rendszer" title="Rendszer szerint">${ic(IC.pc)}</button>
-      <button type="button" data-th="light" aria-label="Világos" title="Világos">${ic(IC.sun)}</button>
-      <button type="button" data-th="dark" aria-label="Sötét" title="Sötét">${ic(IC.moon)}</button></div></div>
   </div>
 </aside>`;
   $('#ftr').innerHTML = `<footer class="foot"><div class="wrap"><p class="small">A tippek nem garantálnak nyereményt. A fogadás kockázattal jár – csak annyit tegyél fel, amennyit megengedhetsz magadnak. 18 év alatt tilos. Segítség: Lelki Elsősegély Telefonszolgálat, 116-123 (ingyenes, 0–24). <a href="/felelos-jatek">Felelős játék</a>.</p></div></footer>`;
@@ -187,10 +182,6 @@ function layout() {
   const tgl = o => { sb.classList.toggle('open', o); sc.classList.toggle('open', o); so.setAttribute('aria-expanded', String(o)); };
   so.onclick = () => tgl(!sb.classList.contains('open')); sc.onclick = () => tgl(false);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') tgl(false); });
-  const cur = () => localStorage.getItem('vg_theme') || 'auto';
-  const mark = () => document.querySelectorAll('#thSeg button').forEach(b => b.classList.toggle('on', b.dataset.th === cur()));
-  document.querySelectorAll('#thSeg button').forEach(b => b.onclick = () => { try { localStorage.setItem('vg_theme', b.dataset.th); } catch (e) { } window.vgTheme && window.vgTheme(); mark(); });
-  mark();
   const lo = $('#logout'); if (lo) lo.onclick = async e => { e.preventDefault(); await signOut(auth); flashNext('Sikeresen kijelentkeztél.'); location.href = '/'; };
 }
 
@@ -475,6 +466,7 @@ function homePage() {
   $('#sportTiles').innerHTML = SPORTS.map(([k, n, e]) => `<a class="sp reveal" href="/tippek?s=${k}"><span class="e">${e}</span><b>${n}</b><small>Megnyitás</small></a>`).join('');
   watchUsers(list => { lastUsers = list; renderPl(list); });
   const member = user && profile && !profile.disabled && (user.emailVerified || isAdmin());
+  vipHome();
   if (member) {
     onSnapshot(query(collection(db, 'tips'), where('date', '==', ymd(new Date()))), s => { $('#stToday').textContent = s.size; }, () => { });
     watchStats();
@@ -1022,10 +1014,6 @@ function settingsPage() {
       <label for="pw2">Új jelszó újra</label><input id="pw2" type="password" required minlength="6" autocomplete="new-password">
       <div class="row" style="margin-top:14px"><button class="btn sm" type="submit">Jelszó módosítása</button><button class="btn sm ghost" type="button" id="selfReset">Elfelejtettem: e-mail küldése</button></div></form></div>
   </div>
-  ${admin ? `<div class="card"><h2>Tagok kezelése <span class="small" id="mCount"></span></h2>
-    <input id="mSearch" placeholder="Keresés név vagy e-mail alapján…" style="margin-bottom:12px" autocomplete="off">
-    <div class="tbl"><table><thead><tr><th>Név</th><th>E-mail</th><th>Regisztrált</th><th>Állapot</th><th>Aktivitás</th><th>Műveletek</th></tr></thead><tbody id="mBody"><tr><td colspan="6">Betöltés…</td></tr></tbody></table></div>
-    <p class="hint" style="margin:12px 0 0">A „Név” gomb átírja a tag felhasználónevét. Más jelszavát biztonsági okból nem lehet közvetlenül beállítani: a „Jelszó-mail” gomb levelet küld a tagnak, amiben ő választ újat (a link 5 percig érvényes, és csak a legutóbb kért levél működik). A „Törlés” eltávolítja a profilját és letiltja a hozzáférését (a neve felszabadul). A bejelentkezési adata a Firebase Console → Authentication → Users listán egy kattintással véglegesen is törölhető.</p></div>` : ''}
   </section>`;
   showStoredFlash();
 
@@ -1134,38 +1122,60 @@ function settingsPage() {
     btn.disabled = false;
   };
   $('#selfReset').onclick = async () => { try { await sendReset(user.email); toast('Elküldtük a levelet: ' + user.email + ' (5 percig érvényes).'); } catch (x) { toast(resetErr(x), 'err'); } };
+}
 
-  if (!admin) return;
-  let users = [], mails = {}, filter = '';
-  let pres = {};
+/* ---------- tagkezelés (csak adminoknak) ---------- */
+function membersPage() {
+  const root = $('#main');
+  if (!user) { root.innerHTML = lockView(); return; }
+  if (!isAdmin()) { root.innerHTML = infoView('🔒', 'Nincs jogosultság', 'A Tagkezelés csak az adminoknak érhető el.', '<div class="row" style="justify-content:center;margin-top:18px"><a class="btn" href="/">Főoldal</a></div>'); return; }
+  const NAME_RE = /^[A-Za-z0-9_.\-]{3,20}$/;
+  const DC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7c3-1.3 7-1.3 10 0l2 9c-1.6 1.2-3.2 1.9-4.8 2.2l-.8-1.5c-1 .3-2.6.3-3.6 0l-.8 1.5C7.4 17.9 5.8 17.2 4.2 16z"/><circle cx="9.5" cy="12.5" r="1"/><circle cx="14.5" cy="12.5" r="1"/></svg>';
+  root.innerHTML = `<section class="wrap" style="padding-top:26px">
+    <div class="mm-top"><h1>Tagkezelés</h1><div class="mm-cnt" id="mCnt"></div></div>
+    <input id="mSearch" placeholder="Keresés név vagy e-mail alapján…" autocomplete="off" aria-label="Keresés">
+    <div class="mm-list" id="mList"><p class="small">Betöltés…</p></div></section>`;
+  showStoredFlash();
+  let users = [], mails = {}, pres = {}, filter = '', openId = null;
   const ON_MS = 150000;
-  const actOf = u => {
-    const t = u.id === user.uid ? Date.now() : pres[u.id];
-    if (!t) return '<span class="small" title="Még nincs adat">–</span>';
-    if (Date.now() - t < ON_MS) return '<span style="display:inline-flex;align-items:center;gap:6px;color:#86efac;font-weight:700;font-size:.82rem"><i style="width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e"></i>Online</span>';
-    const d = new Date(t), hm = pad(d.getHours()) + ':' + pad(d.getMinutes()), day = ymd(d);
-    const lab = day === ymd(new Date()) ? 'ma ' + hm : day === ymd(new Date(Date.now() - 864e5)) ? 'tegnap ' + hm : pad(d.getMonth() + 1) + '.' + pad(d.getDate()) + '. ' + hm;
-    return `<span class="small" title="${esc(d.toLocaleString('hu-HU'))}" style="white-space:nowrap">${lab}</span>`;
-  };
+  const U = id => users.find(x => x.id === id);
+  const lastOf = u => u.id === user.uid ? Date.now() : (pres[u.id] || 0);
+  const online = u => Date.now() - lastOf(u) < ON_MS;
+  const fdt = t => t ? new Date(t).toLocaleString('hu-HU', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '–';
+  const ini = u => esc((u.name || '?').replace(/^[_.\-]+/, '').charAt(0).toUpperCase());
+  const rank = u => isAdminName(u.name) ? '<span class="pill v">Admin · Tippadó</span>' : u.disabled ? '<span class="pill r">Letiltva</span>' : u.vip ? '<span class="pill vip">★ VIP tag</span>' : '<span class="pill g">Tag</span>';
+  const av = u => `<div class="mm-av">${picOf(u) ? `<img src="${picOf(u)}" alt="">` : ini(u)}${online(u) ? '<i title="Online"></i>' : ''}</div>`;
+  const seen = u => online(u) ? '<span class="okk"><b>Online most</b></span>' : lastOf(u) ? esc(fdt(lastOf(u))) : 'Még nincs adat';
+  const err = x => toast('Nem sikerült: ' + (x.code || x.message), 'err');
+
   const draw = () => {
-    const l = users.filter(u => !filter || (u.name || '').toLowerCase().includes(filter) || (mails[u.id] || '').toLowerCase().includes(filter))
-      .sort((a, b) => (isAdminName(b.name) - isAdminName(a.name)) || (a.created || 0) - (b.created || 0));
-    $('#mCount').textContent = '(' + users.length + ' · online: ' + users.filter(u => u.id === user.uid || (pres[u.id] && Date.now() - pres[u.id] < ON_MS)).length + ')';
-    $('#mBody').innerHTML = l.length ? l.map(u => {
-      const adm = isAdminName(u.name), me = u.id === user.uid;
-      const stt = (adm ? '<span class="pill v">Admin</span>' : u.disabled ? '<span class="pill r">Letiltva</span>' : '<span class="pill g">Aktív</span>') + (u.vip ? ' <span class="pill vip">★ VIP</span>' : '');
-      return `<tr class="${u.vip && !adm ? 'vip-row' : ''}"><td><b class="${u.vip ? 'vip-nm' : ''}">${esc(u.name || '?')}</b>${me ? ' <span class="small">(te)</span>' : ''}</td><td>${esc(mails[u.id] || '–')}</td><td>${u.created ? new Date(u.created).toLocaleDateString('hu-HU') : '–'}</td><td>${stt}</td><td>${actOf(u)}</td>
-      <td class="acts"><button class="btn sm ghost" data-rs="${u.id}">Jelszó-mail</button>${adm ? '' : `<button class="btn sm ghost" data-vip="${u.id}">${u.vip ? 'VIP elvétel' : '★ VIP adás'}</button><button class="btn sm ghost" data-nm="${u.id}">Név</button><button class="btn sm ghost" data-dis="${u.id}">${u.disabled ? 'Feloldás' : 'Letiltás'}</button><button class="btn sm danger" data-rm="${u.id}">Törlés</button>`}</td></tr>`;
-    }).join('') : '<tr><td colspan="6">Nincs találat.</td></tr>';
-    const U = id => users.find(x => x.id === id);
-    $('#mBody').querySelectorAll('[data-rs]').forEach(b => b.onclick = async () => {
-      const em = mails[b.dataset.rs]; if (!em) { toast('Ennek a tagnak nincs ismert e-mail címe.', 'err'); return; }
+    const q = filter;
+    const l = users.filter(u => !q || (u.name || '').toLowerCase().includes(q) || (mails[u.id] || '').toLowerCase().includes(q))
+      .sort((a, b) => (isAdminName(b.name) - isAdminName(a.name)) || (!!b.vip - !!a.vip) || (a.created || 0) - (b.created || 0));
+    $('#mCnt').innerHTML = `<span>Összes <b>${users.length}</b></span><span>Online <b>${users.filter(online).length}</b></span><span>VIP <b>${users.filter(u => u.vip && !u.disabled).length}</b></span>${users.some(u => u.disabled) ? `<span>Letiltott <b>${users.filter(u => u.disabled).length}</b></span>` : ''}`;
+    $('#mList').innerHTML = l.length ? l.map(u => `<div class="mm-row" tabindex="0" role="button" data-id="${u.id}" aria-label="${esc(u.name || '?')} adatai">${av(u)}<div class="mm-id"><b>${esc(u.name || '?')}${u.id === user.uid ? ' <span class="small">(te)</span>' : ''}</b><span>${esc(mails[u.id] || '–')}</span></div>
+      <div class="mm-q"><button type="button" class="${u.discord ? 'on' : ''}" data-dc="${u.id}" title="${u.discord ? 'Discord leválasztása: ' + esc(u.discord.name) : 'Discord fiók összekapcsolása'}">${DC}<span>${u.discord ? 'Discord ✔' : 'Discord +'}</span></button>${picOf(u) ? `<button type="button" data-pic="${u.id}" title="Profilkép levétele">✕<span>Kép levétele</span></button>` : ''}</div></div>`).join('') : '<p class="small">Nincs találat.</p>';
+    if (openId) modal();
+  };
+
+  /* műveletek */
+  const A = {
+    dc: async id => {
+      const u = U(id); if (!u) return;
+      if (u.discord) { if (!confirm('Leválasztod ' + u.name + ' Discord fiókját (' + u.discord.name + ')?')) return; try { await updateDoc(doc(db, 'users', id), { discord: null }); toast('A Discord leválasztva.'); } catch (x) { err(x); } return; }
+      const nn = (prompt('Add meg ' + u.name + ' Discord felhasználónevét:', '') || '').trim().slice(0, 40); if (!nn) return;
+      try { await updateDoc(doc(db, 'users', id), { discord: { id: '', name: nn, avatar: '' } }); toast('Discord összekapcsolva: ' + nn); } catch (x) { err(x); }
+    },
+    pic: async id => { const u = U(id); if (!u || !confirm(u.name + ' profilképének levétele?')) return; try { await updateDoc(doc(db, 'users', id), { avatar: '' }); toast('A profilkép levéve.'); } catch (x) { err(x); } },
+    vip: async id => { const u = U(id); try { await updateDoc(doc(db, 'users', id), { vip: !u.vip }); toast(u.vip ? 'A VIP rang elvéve.' : u.name + ' mostantól VIP tag.'); } catch (x) { err(x); } },
+    dis: async id => { const u = U(id); try { await updateDoc(doc(db, 'users', id), { disabled: !u.disabled }); toast(u.disabled ? 'A tag hozzáférése visszaállítva.' : 'A tag le van tiltva.'); } catch (x) { err(x); } },
+    rs: async id => {
+      const em = mails[id]; if (!em) { toast('Ennek a tagnak nincs ismert e-mail címe.', 'err'); return; }
       if (!confirm('Jelszó-visszaállító levelet küldesz ide: ' + em + ' ?')) return;
       try { await sendReset(em); toast('A jelszó-levél elment: ' + em + ' (5 percig érvényes).'); } catch (x) { toast(resetErr(x), 'err'); }
-    });
-    $('#mBody').querySelectorAll('[data-vip]').forEach(b => b.onclick = async () => { const u = U(b.dataset.vip); try { await updateDoc(doc(db, 'users', u.id), { vip: !u.vip }); toast(u.vip ? 'A VIP rang elvéve.' : u.name + ' mostantól VIP tag.'); } catch (x) { toast('Nem sikerült: ' + (x.code || x.message), 'err'); } });
-    $('#mBody').querySelectorAll('[data-nm]').forEach(b => b.onclick = async () => {
-      const u = U(b.dataset.nm), nn = (prompt('Új felhasználónév ennek a tagnak: ' + u.name, u.name) || '').trim();
+    },
+    nm: async id => {
+      const u = U(id), nn = (prompt('Új felhasználónév ennek a tagnak: ' + u.name, u.name) || '').trim();
       if (!nn || nn === u.name) return;
       if (!NAME_RE.test(nn)) { toast('A felhasználónév 3–20 karakter lehet (angol betű, szám, _ . -).', 'err'); return; }
       const lcN = nn.toLowerCase(), lcO = String(u.name || '').toLowerCase();
@@ -1176,24 +1186,87 @@ function settingsPage() {
         if (lcN !== lcO) { bt.set(doc(db, 'usernames', lcN), { uid: u.id }); if (oe.exists()) bt.delete(doc(db, 'usernames', lcO)); }
         bt.update(doc(db, 'users', u.id), { name: nn });
         await bt.commit(); toast('Név módosítva: ' + nn);
-      } catch (x) { toast('Nem sikerült: ' + (x.code || x.message), 'err'); }
-    });
-    $('#mBody').querySelectorAll('[data-dis]').forEach(b => b.onclick = async () => { const u = U(b.dataset.dis); try { await updateDoc(doc(db, 'users', u.id), { disabled: !u.disabled }); toast(u.disabled ? 'A tag hozzáférése visszaállítva.' : 'A tag le van tiltva.'); } catch (x) { toast('Nem sikerült: ' + (x.code || x.message), 'err'); } });
-    $('#mBody').querySelectorAll('[data-rm]').forEach(b => b.onclick = async () => {
-      const u = U(b.dataset.rm); if (!confirm('Biztosan törlöd ezt a tagot: ' + u.name + ' ?\nA profilja megszűnik, és nem fér hozzá a tippekhez.')) return;
+      } catch (x) { err(x); }
+    },
+    rm: async id => {
+      const u = U(id); if (!confirm('Biztosan törlöd ezt a tagot: ' + u.name + ' ?\nA profilja megszűnik, és nem fér hozzá a tippekhez.')) return;
       try {
         const bt = writeBatch(db);
         bt.delete(doc(db, 'users', u.id)); bt.delete(doc(db, 'userEmails', u.id)); bt.delete(doc(db, 'usernames', String(u.name || '').toLowerCase()));
         bt.set(doc(db, 'banned', u.id), { name: u.name || '', time: Date.now() });
-        await bt.commit(); toast('A tag törölve.');
-      } catch (x) { toast('Nem sikerült: ' + (x.code || x.message), 'err'); }
-    });
+        await bt.commit(); closeModal(); toast('A tag törölve.');
+      } catch (x) { err(x); }
+    }
   };
+
+  /* részletek ablak */
+  function closeModal() { openId = null; const s = $('#mmScrim'); if (s) s.remove(); document.removeEventListener('keydown', esc1); }
+  const esc1 = e => { if (e.key === 'Escape') closeModal(); };
+  function modal() {
+    const u = U(openId); if (!u) { closeModal(); return; }
+    const adm = isAdminName(u.name), d = u.discord;
+    let s = $('#mmScrim');
+    if (!s) { s = document.createElement('div'); s.id = 'mmScrim'; s.className = 'mm-scrim'; document.body.appendChild(s); s.onclick = e => { if (e.target === s) closeModal(); }; document.addEventListener('keydown', esc1); }
+    s.innerHTML = `<div class="mm-modal" role="dialog" aria-modal="true" aria-label="${esc(u.name || '?')}">
+      <div class="mm-hd"><button class="mm-x" type="button" id="mmX" aria-label="Bezárás">✕</button>${av(u)}<div><h2>${esc(u.name || '?')}</h2>${rank(u)}</div></div>
+      <div class="mm-bd">
+        <div class="mm-kv"><span>E-mail</span><span>${esc(mails[u.id] || '–')}</span></div>
+        <div class="mm-kv"><span>Rang</span><span>${rank(u)}</span></div>
+        <div class="mm-kv"><span>Regisztrált</span><span>${esc(fdt(u.created))}</span></div>
+        <div class="mm-kv"><span>Utoljára aktív</span><span>${seen(u)}</span></div>
+        <div class="mm-kv"><span>Discord</span><span>${d ? `<b>${esc(d.name)}</b>${d.id ? ' <span class="small">(' + esc(d.id) + ')</span>' : ''} <span class="okk">✔ összekapcsolva</span>` : 'Nincs összekapcsolva'}</span></div>
+        <div class="mm-kv"><span>Profilkép</span><span>${picOf(u) ? 'Van' : 'Nincs'}</span></div>
+      </div>
+      <div class="mm-ft">
+        <button class="btn ghost" data-a="dc">${d ? 'Discord leválasztása' : 'Discord összekapcsolása'}</button>
+        ${picOf(u) ? '<button class="btn ghost" data-a="pic">Profilkép levétele</button>' : ''}
+        <button class="btn ghost" data-a="rs">Jelszó-mail</button>
+        ${adm ? '' : `<button class="btn ghost" data-a="vip">${u.vip ? 'VIP elvétel' : '★ VIP adás'}</button><button class="btn ghost" data-a="nm">Név módosítása</button><button class="btn ghost" data-a="dis">${u.disabled ? 'Feloldás' : 'Letiltás'}</button><button class="btn danger" data-a="rm">Törlés</button>`}
+      </div></div>`;
+    $('#mmX').onclick = closeModal;
+    s.querySelectorAll('[data-a]').forEach(b => b.onclick = () => A[b.dataset.a](u.id));
+  }
+
+  $('#mList').onclick = e => {
+    const dc = e.target.closest('[data-dc]'), pc = e.target.closest('[data-pic]');
+    if (dc) { e.stopPropagation(); A.dc(dc.dataset.dc); return; }
+    if (pc) { e.stopPropagation(); A.pic(pc.dataset.pic); return; }
+    const r = e.target.closest('.mm-row'); if (r) { openId = r.dataset.id; modal(); }
+  };
+  $('#mList').onkeydown = e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('mm-row')) { e.preventDefault(); openId = e.target.dataset.id; modal(); } };
   $('#mSearch').oninput = e => { filter = e.target.value.trim().toLowerCase(); draw(); };
-  onSnapshot(collection(db, 'users'), sn => { users = sn.docs.map(d => ({ id: d.id, ...d.data() })); draw(); }, x => { $('#mBody').innerHTML = `<tr><td colspan="6">Nem tölthető be: ${esc(x.code || x.message)}</td></tr>`; });
-  onSnapshot(query(collection(db, 'presence'), where('t', '>', Date.now() - 7 * 864e5), orderBy('t', 'desc'), limit(300)), sn => { pres = {}; sn.docs.forEach(d => { pres[d.id] = (d.data() || {}).t || 0; }); draw(); }, () => { });
-  setInterval(draw, 60000);
+  onSnapshot(collection(db, 'users'), sn => { users = sn.docs.map(d => ({ id: d.id, ...d.data() })); draw(); }, x => { $('#mList').innerHTML = `<p class="small">Nem tölthető be: ${esc(x.code || x.message)}</p>`; });
+  onSnapshot(query(collection(db, 'presence'), where('t', '>', Date.now() - 30 * 864e5), orderBy('t', 'desc'), limit(500)), sn => { pres = {}; sn.docs.forEach(d => { pres[d.id] = (d.data() || {}).t || 0; }); draw(); }, () => { });
   onSnapshot(collection(db, 'userEmails'), sn => { mails = {}; sn.docs.forEach(d => mails[d.id] = d.data().email); draw(); }, () => { });
+  setInterval(draw, 60000);
+}
+
+/* ---------- VIP rész a kezdőlapon (VIP tagoknak és adminoknak) ---------- */
+function vipHome() {
+  if (!(user && profile && !profile.disabled && (user.emailVerified || isAdmin()) && (isAdmin() || profile.vip))) return;
+  const anchor = document.querySelector('.stats'); if (!anchor) return;
+  const VK = ['labdarugas', 'jegkorong', 'kezilabda'];
+  const TABS = [['all', 'Összes'], ['today', 'Ma'], ...SPORTS.filter(s => VK.includes(s[0])).map(s => [s[0], s[2] + ' ' + s[1]])];
+  const PC = { win: 'g', loss: 'r', void: 'y', pend: '' };
+  anchor.insertAdjacentHTML('afterend', `<section class="vh" id="vipHome" aria-label="VIP Klub">
+    <div class="vh-hd"><h2><span>★</span> VIP Klub</h2><a class="btn" href="/vip">Teljes VIP Klub megnyitása →</a></div>
+    <div id="vhBody"><p class="small">VIP tippek betöltése…</p></div></section>`);
+  let tips = [], flt = 'all', more = 8;
+  const eff = t => { const s = t.status || 'pend'; if (s !== 'pend') return s; return ((t.result || t.corners) && evalTip(t)) || 'pend'; };
+  const draw = () => {
+    const w = tips.filter(t => eff(t) === 'win').length, x = tips.filter(t => eff(t) === 'loss').length;
+    const pr = tips.reduce((s, t) => { const e = eff(t); return s + (e === 'win' ? (+t.odds || 1) - 1 : e === 'loss' ? -1 : 0); }, 0);
+    const today = ymd(new Date());
+    const l = tips.filter(t => flt === 'all' || (flt === 'today' ? t.date === today : t.sport === flt)).sort((a, b) => (b.date + (b.time || '')).localeCompare(a.date + (a.time || '')));
+    $('#vhBody').innerHTML = `<div class="vh-sum"><div><b>${tips.length}</b><span>Összes tipp</span></div><div><b>${w}–${x}</b><span>Nyert – vesztett</span></div><div><b>${w + x ? Math.round(w / (w + x) * 100) + '%' : '–'}</b><span>Találati arány</span></div><div><b>${(pr > 0 ? '+' : '') + pr.toFixed(2)}</b><span>Profit (egység)</span></div></div>
+    <div class="vh-tabs">${TABS.map(([k, n]) => `<button type="button" data-f="${k}" class="${flt === k ? 'on' : ''}">${n}</button>`).join('')}</div>
+    ${l.length ? l.slice(0, more).map(t => { const s = eff(t), sp = SPORTS.find(z => z[0] === t.sport) || SPORTS[0]; return `<div class="vh-tip ${s}"><div class="st"></div><div><div class="vh-m">${sp[2]} ${esc(sp[1]).toUpperCase()}${t.league ? ' · ' + esc(t.league) : ''} · ${esc(t.date || '')}${t.time ? ' ' + esc(t.time) : ''}</div><div class="vh-t">${esc(t.home || '')}${t.away ? ' – ' + esc(t.away) : ''}</div><div class="vh-p">Tipp: <b>${esc(t.pick || '')}</b> · Tippadó: <b>${esc(tpName(t.tipster) || 'Admin')}</b>${t.result ? ' · Eredmény: <b>' + esc(t.result) + '</b>' : ''}</div></div><div class="vh-r">${t.odds ? `<div class="o">${(+t.odds).toFixed(2)}</div>` : ''}<span class="pill ${PC[s]}">${LAB[s]}</span></div></div>`; }).join('') : '<div class="vh-empty">Ebben a szűrésben nincs VIP tipp.</div>'}
+    ${l.length > more ? '<div style="text-align:center;margin-top:10px"><button class="btn ghost" id="vhMore" type="button">Továbbiak (' + (l.length - more) + ')</button></div>' : ''}`;
+    $('#vhBody').querySelectorAll('[data-f]').forEach(b => b.onclick = () => { flt = b.dataset.f; more = 8; draw(); });
+    const m = $('#vhMore'); if (m) m.onclick = () => { more += 10; draw(); };
+  };
+  onSnapshot(query(collection(db, 'vipTips'), orderBy('date', 'desc'), limit(300)), s => { tips = s.docs.map(d => ({ id: d.id, ...d.data() })).filter(t => VK.includes(t.sport)); draw(); },
+    e => { $('#vhBody').innerHTML = `<div class="vh-empty">A VIP tippek most nem érhetők el.${isAdmin() ? '<br><span class="small">' + esc(e.code || e.message) + '</span>' : ''}</div>`; });
 }
 
 /* ---------- Updates / Chat (külön modul) + "új update" jelvény ---------- */
@@ -1257,6 +1330,7 @@ async function start(u) {
   else if (page === 'contact') { contactPage(); joinPage(); }
   else if (page === 'home') homePage();
   else if (page === 'settings') settingsPage();
+  else if (page === 'members') membersPage();
   else if (page === 'updates' || page === 'chat') loadCommunity();
   if (user && profile && !profile.disabled && (user.emailVerified || isAdmin())) {
     loadNotify();

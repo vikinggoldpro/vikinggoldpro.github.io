@@ -128,12 +128,18 @@ body{background-image:radial-gradient(900px 500px at 80% -10%,rgba(85,196,247,.2
 .chart svg{width:100%;height:auto;display:block;overflow:visible}.chart .ax{fill:var(--mut);font:10px Inter,sans-serif}
 .chart .gd{stroke:rgba(255,255,255,.07);stroke-width:1}.chart .nodata{color:var(--mut);padding:26px 0;text-align:center;font-size:.9rem}
 
-/* ===== Pro színek (VIP) ===== */
-:root{--g:#ff9a4d;--g2:#ff7a1a;--au:#ffb070;--pu:rgba(255,122,26,.14);--bg:#09070f;--card:#14111d;--line:#241f33}
-html{background:#09070f}
+/* ===== Egységes kékes-fekete / babakék design ===== */
+:root{--g:#7dd3fc;--g2:#38bdf8;--au:#bae6fd;--pu:rgba(125,211,252,.14);--bg:#050a15;--card:#0b1529;--line:#1c2f52;--ink:#f5f9ff;--mut:#a9bbd6}
+html{background:#050a15}
 body{background:transparent;background-image:none}
-.btn:not(.ghost){background:#ff7a1a;color:#fff;box-shadow:none}
-.tab.on{background:rgba(255,122,26,.18);border-color:#ff7a1a;color:#ffd9bd}
+.btn:not(.ghost){background:linear-gradient(135deg,#7dd3fc,#38bdf8);color:#04112a;box-shadow:0 8px 24px -12px #38bdf8;font-weight:700}
+.btn.ghost{color:var(--ink)}
+.tab.on{background:#7dd3fc;border-color:#7dd3fc;color:#04112a}
+.tabs.sub .tab.on{background:rgba(125,211,252,.18);color:#bae6fd;border-color:#7dd3fc}
+.brand i{color:#04112a}
+.pick b{background:rgba(125,211,252,.16);color:#bae6fd}
+.sum{background:linear-gradient(135deg,#0d2347,#08152b);border-color:#1f3f72}
+.cat:nth-child(2) b{color:#a5b4fc}.cat:nth-child(3) b{color:#5eead4}
 </style>
 </head>
 <body>

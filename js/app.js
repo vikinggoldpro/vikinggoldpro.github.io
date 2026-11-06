@@ -60,7 +60,7 @@ const huDate = s => { const d = new Date(s + 'T12:00:00'); return isNaN(d) ? s :
     const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = '#050a15';
   };
   window.vgTheme = apply; apply();
-  const sc = document.createElement('script'); sc.src = '/js/bg.js?v=20261103a'; sc.defer = true; document.head.appendChild(sc);
+  /* a kockás canvas-háttér (bg.js) megszűnt: sportági háttereket az assets/fx.js kezeli */
 })();
 const page = document.body.dataset.page;
 const params = new URLSearchParams(location.search);
@@ -611,7 +611,7 @@ function tippekPage() {
     if (flt.q) { const h = norm([t.home, t.away, t.pick, t.league, t.tipster, t.result].join(' ')); if (!flt.q.split(/\s+/).every(w => h.includes(w))) return false; }
     return true;
   };
-  const sync = () => { history.replaceState(null, '', `/tippek?s=${st.s}&v=${st.v}${st.v === 'date' ? '&d=' + st.d : ''}`); try { localStorage.setItem('vg_sport', st.s); } catch (e) { } };
+  const sync = () => { window.vgBg && window.vgBg(st.s); history.replaceState(null, '', `/tippek?s=${st.s}&v=${st.v}${st.v === 'date' ? '&d=' + st.d : ''}`); try { localStorage.setItem('vg_sport', st.s); } catch (e) { } };
   const curDate = () => st.v === 'tomorrow' ? tomorrow : st.v === 'date' ? st.d : today;
   try { localStorage.setItem('vg_sport', st.s); } catch (e) { }   // a legutóbb nézett sportágat megjegyezzük
 

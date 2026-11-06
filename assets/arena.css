@@ -54,11 +54,11 @@ html body .bgfx i{display:block!important}
 .sp{--bgimg:none;isolation:isolate;min-height:220px;border:1px solid rgba(255,255,255,.18)!important;background:rgb(var(--ink))!important;overflow:hidden}
 .sp::before{display:block!important;content:""!important;position:absolute;inset:0!important;height:auto!important;z-index:-1;opacity:1!important;background:linear-gradient(180deg,rgba(0,0,0,.05) 0,rgba(0,0,0,.78) 100%),var(--bgimg) center/cover no-repeat!important;transition:transform .5s}
 .sp:hover::before{transform:scale(1.12)}
-.sp[href$="=labdarugas"]{--bgimg:url(/labdarugas.svg);--c:#38e07b}
-.sp[href$="=jegkorong"]{--bgimg:url(/jegkorong.svg);--c:#4cc3ff}
-.sp[href$="=kezilabda"]{--bgimg:url(/kezilabda.svg);--c:#ffb020}
-.sp[href$="=kosarlabda"]{--bgimg:url(/kosarlabda.svg);--c:#ff8a2b}
-.sp[href$="=tenisz"]{--bgimg:url(/tenisz.svg);--c:#d9f24a}
+.sp[href$="=labdarugas"]{--bgimg:repeating-linear-gradient(90deg,#0f6b2c 0 38px,#14903f 38px 76px);--c:#38e07b}
+.sp[href$="=jegkorong"]{--bgimg:linear-gradient(135deg,#0b3f75,#3cb4f5);--c:#4cc3ff}
+.sp[href$="=kezilabda"]{--bgimg:linear-gradient(135deg,#1e40af,#f59e0b);--c:#ffb020}
+.sp[href$="=kosarlabda"]{--bgimg:repeating-linear-gradient(0deg,#b86a24 0 14px,#d0813a 14px 28px);--c:#ff8a2b}
+.sp[href$="=tenisz"]{--bgimg:linear-gradient(135deg,#1d4ed8,#4f9bff);--c:#d9f24a}
 .sp:hover{border-color:var(--c,var(--ac))!important;box-shadow:0 0 0 1px var(--c,var(--ac)),0 30px 60px -22px var(--c,var(--ac))!important}
 .sp b{color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.9)}
 .sp small{background:rgba(0,0,0,.45)!important;border:1px solid var(--c,var(--ac))!important;color:#fff!important}

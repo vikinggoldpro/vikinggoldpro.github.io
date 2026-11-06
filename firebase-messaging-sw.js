@@ -2,9 +2,9 @@
    1) Offline támogatás: a lapok és a fájlok a hálózatról töltődnek, de ha nincs net, a legutóbbi mentett változat jelenik meg.
    2) Telefonos push: megjeleníti a szerverről érkező értesítést, és kattintásra megnyitja a megfelelő oldalt.
    A fájl neve azért firebase-messaging-sw.js, mert a js/notify.js is ezt regisztrálja – így egyetlen service worker van. */
-const VER = 'vg-v4';
+const VER = 'vg-v5';
 const PAGES = VER + '-pages', STATIC = VER + '-static', LIBS = VER + '-libs';
-const PRECACHE = ['/offline.html', '/assets/style.css', '/assets/pro.css', '/js/theme.js', '/assets/logo.webp', '/assets/icon-192.png'];
+const PRECACHE = ['/offline.html', '/assets/style.css', '/assets/pro.css', '/assets/arena.css', '/js/theme.js', '/assets/logo.webp', '/assets/icon-192.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(STATIC).then(c => Promise.all(PRECACHE.map(u => c.add(u).catch(() => { })))).then(() => self.skipWaiting()));

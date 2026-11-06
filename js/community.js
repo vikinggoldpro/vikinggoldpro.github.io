@@ -14,6 +14,35 @@ const REACTIONS = { up: '👍', fire: '🔥', heart: '❤️', laugh: '😂', wi
 const COMPOSER_EMOJIS = ['😀', '😂', '😅', '😉', '😍', '😎', '🤔', '😮', '😢', '😡', '👍', '👎', '👏', '🙏', '🔥', '💯', '🎯', '💰', '⚽', '🏀', '🏒', '🎾', '🍀', '🏆', '✅', '❌', '⚠️', '❤️', '🎉', '💪', '🤝', '👀'];
 const TAGS = { new: 'Újdonság', imp: 'Fejlesztés', fix: 'Javítás', ann: 'Bejelentés' };
 
+/* Új update -> Discord webhook (@everyone ping). A webhook címe a js/firebase-config.js-ben van (discordWebhook).
+   Visszatérés: true = elküldve, false = hiba, null = nincs beállítva webhook. */
+async function sendDiscord(d, author) {
+  let hook = '';
+  try { hook = (await import('/js/firebase-config.js')).discordWebhook || ''; } catch (e) { }
+  if (!hook) return null;
+  const COL = { new: 0x22c55e, imp: 0x38bdf8, fix: 0xf59e0b, ann: 0xef4444 };
+  const icon = { new: '🆕', imp: '🛠️', fix: '🐞', ann: '📢' };
+  const payload = {
+    username: 'VikingGOLD',
+    avatar_url: 'https://vikinggoldpro.github.io/assets/logo.png',
+    content: '@everyone',
+    allowed_mentions: { parse: ['everyone'] },
+    embeds: [{
+      title: ((icon[d.tag] || '📢') + ' ' + d.title).slice(0, 250),
+      description: String(d.body || '').slice(0, 3900),
+      url: 'https://vikinggoldpro.github.io/updates',
+      color: COL[d.tag] || 0x38bdf8,
+      fields: [{ name: 'Típus', value: (TAGS[d.tag] || 'Újdonság') + (d.ver ? ' · ' + d.ver : ''), inline: true }, { name: 'Megnyitás', value: '[vikinggoldpro.github.io/updates](https://vikinggoldpro.github.io/updates)', inline: true }],
+      footer: { text: 'VikingGOLD' + (author ? ' · ' + author : '') },
+      timestamp: new Date().toISOString()
+    }]
+  };
+  try {
+    const r = await fetch(hook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    return r.ok;
+  } catch (e) { return false; }
+}
+
 const AV_COLORS = ['#0284c7', '#6366f1', '#0d9488', '#be123c', '#b45309', '#7c3aed', '#15803d', '#c2410c'];
 const colorOf = s => { let h = 0; s = String(s || '?'); for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return AV_COLORS[Math.abs(h) % AV_COLORS.length]; };
 const picOf = p => (p && typeof p.avatar === 'string' && p.avatar.startsWith('data:image/')) ? p.avatar : '';
@@ -145,7 +174,7 @@ export function updatesPage(c) {
       const btn = $('#uSave'); btn.disabled = true;
       try {
         if (editing) { await updateDoc(doc(db, 'updates', editing), { ...data, edited: Date.now() }); toast('A bejegyzés mentve.'); }
-        else { await addDoc(collection(db, 'updates'), { ...data, created: Date.now(), authorUid: user.uid, author: myName(c) }); toast('A bejegyzés közzétéve.'); }
+        else { await addDoc(collection(db, 'updates'), { ...data, created: Date.now(), authorUid: user.uid, author: myName(c) }); toast('A bejegyzés közzétéve.'); sendDiscord(data, myName(c)).then(ok => { if (ok === false) toast('A Discord-értesítést nem sikerült elküldeni.', 'err'); else if (ok) toast('A Discord-értesítés elment (@everyone).'); }); }
         reset();
       } catch (e) { toast('Nem sikerült: ' + (e.code || e.message), 'err'); }
       btn.disabled = false;

@@ -21,7 +21,11 @@ body[data-bg]{--gold:var(--ac);--gold2:var(--ac2)}
   background:
     radial-gradient(1100px 600px at 50% 0,rgba(var(--acg),.16),transparent 70%),
     linear-gradient(180deg,rgba(var(--ink),.10) 0,rgba(var(--ink),.38) 45%,rgba(var(--ink),.80) 100%)}
-body{background:rgb(var(--ink))!important;background-image:none!important}
+/* a pro.css elrejtette a háttérréteget és az html/body takarta: ezt felülírjuk */
+html{background:#03060c!important}
+html body{background:transparent!important;background-image:none!important}
+html body .bgfx{display:block!important}
+html body .bgfx i{display:block!important}
 
 /* ----- fejléc és lábléc ----- */
 .top{background:rgba(var(--ink),.72)!important;-webkit-backdrop-filter:saturate(1.5) blur(16px)!important;backdrop-filter:saturate(1.5) blur(16px)!important;border-bottom:1px solid rgba(var(--acg),.35)!important;box-shadow:0 10px 40px -18px rgba(var(--acg),.5)!important}
@@ -50,11 +54,11 @@ body{background:rgb(var(--ink))!important;background-image:none!important}
 .sp{--bgimg:none;isolation:isolate;min-height:220px;border:1px solid rgba(255,255,255,.18)!important;background:rgb(var(--ink))!important;overflow:hidden}
 .sp::before{display:block!important;content:""!important;position:absolute;inset:0!important;height:auto!important;z-index:-1;opacity:1!important;background:linear-gradient(180deg,rgba(0,0,0,.05) 0,rgba(0,0,0,.78) 100%),var(--bgimg) center/cover no-repeat!important;transition:transform .5s}
 .sp:hover::before{transform:scale(1.12)}
-.sp[href$="=labdarugas"]{--bgimg:url(/assets/bg/labdarugas.svg);--c:#38e07b}
-.sp[href$="=jegkorong"]{--bgimg:url(/assets/bg/jegkorong.svg);--c:#4cc3ff}
-.sp[href$="=kezilabda"]{--bgimg:url(/assets/bg/kezilabda.svg);--c:#ffb020}
-.sp[href$="=kosarlabda"]{--bgimg:url(/assets/bg/kosarlabda.svg);--c:#ff8a2b}
-.sp[href$="=tenisz"]{--bgimg:url(/assets/bg/tenisz.svg);--c:#d9f24a}
+.sp[href$="=labdarugas"]{--bgimg:url(/labdarugas.svg);--c:#38e07b}
+.sp[href$="=jegkorong"]{--bgimg:url(/jegkorong.svg);--c:#4cc3ff}
+.sp[href$="=kezilabda"]{--bgimg:url(/kezilabda.svg);--c:#ffb020}
+.sp[href$="=kosarlabda"]{--bgimg:url(/kosarlabda.svg);--c:#ff8a2b}
+.sp[href$="=tenisz"]{--bgimg:url(/tenisz.svg);--c:#d9f24a}
 .sp:hover{border-color:var(--c,var(--ac))!important;box-shadow:0 0 0 1px var(--c,var(--ac)),0 30px 60px -22px var(--c,var(--ac))!important}
 .sp b{color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.9)}
 .sp small{background:rgba(0,0,0,.45)!important;border:1px solid var(--c,var(--ac))!important;color:#fff!important}

@@ -1,0 +1,69 @@
+/* VikingGOLD – Aréna téma: sportáganként saját pálya-háttér, élénk, odabaszós megjelenés */
+:root{--ac:#38bdf8;--ac2:#bae6fd;--acg:56,189,248;--ink:3,6,12}
+body[data-bg=fooldal]{--ac:#38e07b;--ac2:#c9ffd9;--acg:56,224,123}
+body[data-bg=labdarugas]{--ac:#38e07b;--ac2:#c9ffd9;--acg:56,224,123;--ink:2,12,6}
+body[data-bg=jegkorong]{--ac:#4cc3ff;--ac2:#d4f0ff;--acg:76,195,255;--ink:2,9,20}
+body[data-bg=kezilabda]{--ac:#ffb020;--ac2:#ffe3a3;--acg:255,176,32;--ink:6,10,34}
+body[data-bg=kosarlabda]{--ac:#ff8a2b;--ac2:#ffd2a3;--acg:255,138,43;--ink:16,8,2}
+body[data-bg=tenisz]{--ac:#d9f24a;--ac2:#f2ffb0;--acg:217,242,74;--ink:3,16,10}
+/* a sportág színe vegye át a „gold” változót is, így minden gomb, link, kiemelés követi */
+body[data-bg]{--gold:var(--ac);--gold2:var(--ac2)}
+
+/* ----- háttér: nincs kocka, nincs rács ----- */
+#vgbg,#fx{display:none!important}
+.bgfx{position:fixed!important;inset:0;z-index:-2;overflow:hidden;pointer-events:none;background:rgb(var(--ink))}
+.bgfx i{position:absolute!important;inset:-4% 0 -4% 0!important;height:auto!important;display:block;opacity:0;transition:opacity .8s ease;
+  background-color:rgb(var(--ink))!important;background-size:cover!important;background-position:center top!important;background-repeat:no-repeat!important;
+  transform:translate3d(0,calc(var(--py,0px)*-.25),0)!important;animation:none!important;will-change:transform,opacity}
+.bgfx i.on{opacity:1}
+/* kép felett: felül élénk, lent sötétebb, hogy az olvashatóság megmaradjon */
+.bgfx::after{content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(1100px 600px at 50% 0,rgba(var(--acg),.16),transparent 70%),
+    linear-gradient(180deg,rgba(var(--ink),.10) 0,rgba(var(--ink),.38) 45%,rgba(var(--ink),.80) 100%)}
+body{background:rgb(var(--ink))!important;background-image:none!important}
+
+/* ----- fejléc és lábléc ----- */
+.top{background:rgba(var(--ink),.72)!important;-webkit-backdrop-filter:saturate(1.5) blur(16px)!important;backdrop-filter:saturate(1.5) blur(16px)!important;border-bottom:1px solid rgba(var(--acg),.35)!important;box-shadow:0 10px 40px -18px rgba(var(--acg),.5)!important}
+.foot{background:linear-gradient(180deg,transparent,rgba(var(--ink),.92))!important;border-top:1px solid rgba(var(--acg),.25)!important}
+
+/* ----- hero ----- */
+.hero2.solo h1{background:linear-gradient(100deg,#fff 20%,var(--ac2) 60%,var(--ac) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent!important;filter:drop-shadow(0 6px 30px rgba(0,0,0,.65))}
+.hero2.solo h1::after{background:linear-gradient(90deg,var(--ac),transparent)!important;box-shadow:0 0 28px rgba(var(--acg),.9)!important}
+.hero2.solo .lead,.hero .lead{color:#e6ecf7!important;text-shadow:0 2px 18px rgba(0,0,0,.85)!important}
+.sect-t{text-shadow:0 3px 26px rgba(0,0,0,.9)!important}
+.g{background:linear-gradient(120deg,var(--ac2),var(--ac))!important;-webkit-background-clip:text!important;background-clip:text!important}
+
+/* ----- gombok ----- */
+.btn:not(.ghost){background:linear-gradient(135deg,var(--ac2),var(--ac))!important;color:#04110a!important;font-weight:800;border:0!important;box-shadow:0 12px 34px -10px rgba(var(--acg),.85),inset 0 1px 0 rgba(255,255,255,.5)!important;transition:transform .18s,box-shadow .18s}
+.btn:not(.ghost):hover{transform:translateY(-3px) scale(1.02);box-shadow:0 18px 44px -10px rgba(var(--acg),1)!important}
+.btn.ghost{background:rgba(255,255,255,.07)!important;border:1px solid rgba(255,255,255,.35)!important;color:#fff!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.btn.ghost:hover{border-color:var(--ac)!important;background:rgba(var(--acg),.18)!important}
+
+/* ----- kártyák: üveghatás, hogy a háttér átüssön ----- */
+.card,.stat,.vgs,.faq details,.how-s,.banner,.empty{background:linear-gradient(160deg,rgba(var(--ink),.62),rgba(var(--ink),.82))!important;border:1px solid rgba(255,255,255,.12)!important;-webkit-backdrop-filter:blur(12px) saturate(1.3);backdrop-filter:blur(12px) saturate(1.3);box-shadow:0 20px 50px -26px rgba(0,0,0,.9)}
+.stat::before{background:radial-gradient(circle,rgba(var(--acg),.4),transparent 70%)!important}
+.stat b{background:linear-gradient(180deg,#fff,var(--ac))!important;-webkit-background-clip:text!important;background-clip:text!important}
+.banner{border-color:rgba(var(--acg),.5)!important;box-shadow:0 0 0 1px rgba(var(--acg),.2),0 30px 70px -30px rgba(var(--acg),.5)!important}
+
+/* ----- sportág-csempék a főoldalon: mindegyik a saját pályájával ----- */
+.sp{--bgimg:none;isolation:isolate;min-height:220px;border:1px solid rgba(255,255,255,.18)!important;background:rgb(var(--ink))!important;overflow:hidden}
+.sp::before{display:block!important;content:""!important;position:absolute;inset:0!important;height:auto!important;z-index:-1;opacity:1!important;background:linear-gradient(180deg,rgba(0,0,0,.05) 0,rgba(0,0,0,.78) 100%),var(--bgimg) center/cover no-repeat!important;transition:transform .5s}
+.sp:hover::before{transform:scale(1.12)}
+.sp[href$="=labdarugas"]{--bgimg:url(/assets/bg/labdarugas.svg);--c:#38e07b}
+.sp[href$="=jegkorong"]{--bgimg:url(/assets/bg/jegkorong.svg);--c:#4cc3ff}
+.sp[href$="=kezilabda"]{--bgimg:url(/assets/bg/kezilabda.svg);--c:#ffb020}
+.sp[href$="=kosarlabda"]{--bgimg:url(/assets/bg/kosarlabda.svg);--c:#ff8a2b}
+.sp[href$="=tenisz"]{--bgimg:url(/assets/bg/tenisz.svg);--c:#d9f24a}
+.sp:hover{border-color:var(--c,var(--ac))!important;box-shadow:0 0 0 1px var(--c,var(--ac)),0 30px 60px -22px var(--c,var(--ac))!important}
+.sp b{color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.9)}
+.sp small{background:rgba(0,0,0,.45)!important;border:1px solid var(--c,var(--ac))!important;color:#fff!important}
+
+/* ----- tippek oldal: sportág-fülek ----- */
+#sTabs a{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);background:rgba(var(--ink),.6);border:1px solid rgba(255,255,255,.14);transition:.2s}
+#sTabs a.on{background:linear-gradient(135deg,var(--ac2),var(--ac))!important;color:#04110a!important;border-color:transparent!important;box-shadow:0 10px 30px -10px rgba(var(--acg),.9)}
+#sTabs a.on small{color:#04110a!important}
+::selection{background:rgba(var(--acg),.4)}
+:focus-visible{outline-color:var(--ac)!important}
+@media(max-width:760px){.sp{min-height:170px}.bgfx i{inset:0!important;transform:none!important}}
+@media(prefers-reduced-motion:reduce){.bgfx i{transition:none}.sp::before{transition:none}}

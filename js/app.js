@@ -633,7 +633,7 @@ function tippekPage() {
   <div class="sbar" id="sbar"></div>
   <div id="tchart"></div>
   <div id="echart"></div>
-  <div class="tlog"><div class="tlh"><span>Tippek és eredmények</span><small id="tlSub"></small></div><div id="rbox"></div><div id="tsum"></div><div id="tlist"><div class="empty">Betöltés…</div></div></div>
+  <div class="tlog"><div class="tlh"><span>Tippek és eredmények</span><small id="tlSub"></small></div><div id="rbox"></div><div id="vbox"></div><div id="tsum"></div><div id="tlist"><div class="empty">Betöltés…</div></div></div>
   </section>`;
   showStoredFlash();
 
@@ -643,6 +643,7 @@ function tippekPage() {
   $('#fcsv').onclick = () => exportCsv();
 
   let rts = [], unR = null, rKey = '', rErr = false;
+  let vws = [], unV = null, vKey = '', vErr = false; const vSeen = new Set();
   const dayDate = () => st.v === 'all' ? today : curDate();
   const rstat = (d, sp) => { let n = 0, sum = 0, mine = 0; rts.forEach(r => { if (r.date === d && r.sport === sp) { const v = +r.stars; if (v >= 1 && v <= 5) { n++; sum += v; if (user && r.uid === user.uid) mine = v; } } }); return { n, avg: n ? sum / n : 0, mine }; };
   function rateHtml(d, sp, hasTips, mini) {
@@ -657,11 +658,31 @@ function tippekPage() {
     if (st.v === 'all') { list(); return; }
     const hasTips = all.some(t => sportOf(t) === st.s && t.date === curDate());
     $('#rbox').innerHTML = loaded ? rateHtml(curDate(), st.s, hasTips, false) : '';
+    views();
   }
   function watchR() {
     const k = st.v === 'all' ? 'all' : curDate(); if (k === rKey) return; rKey = k; if (unR) unR(); rErr = false; rts = [];
     const q = k === 'all' ? query(collection(db, 'ratings'), orderBy('date', 'desc'), limit(2000)) : query(collection(db, 'ratings'), where('date', '==', k));
     unR = onSnapshot(q, sn => { rErr = false; rts = sn.docs.map(d => d.data()); rate(); }, () => { rErr = true; rts = []; rate(); });
+  }
+  /* Ki nézte meg a napi tippeket: összesítő + nevek (naponta és sportáganként tagonként egy bejegyzés) */
+  function watchV() {
+    const d = dayDate(); if (d === vKey) return; vKey = d; if (unV) unV(); vErr = false; vws = [];
+    unV = onSnapshot(query(collection(db, 'tipViews'), where('date', '==', d)), sn => { vErr = false; vws = sn.docs.map(x => x.data()); views(); }, () => { vErr = true; vws = []; views(); });
+  }
+  function views() {
+    const box = $('#vbox'); if (!box) return;
+    const d = dayDate(), sp = st.s;
+    if (!loaded || !all.some(t => sportOf(t) === sp && t.date === d)) { box.innerHTML = ''; return; }
+    if (vErr) { box.innerHTML = admin ? '<div class="vwb"><span class="vwt">👁 Megtekintések</span><span class="small">Nincs bekapcsolva: add hozzá a „tipViews” Firestore szabályt.</span></div>' : ''; return; }
+    if (user && !admin && !vws.some(v => v.uid === user.uid && v.sport === sp)) {
+      const id = `${d}_${sp}_${user.uid}`;
+      if (!vSeen.has(id)) { vSeen.add(id); setDoc(doc(db, 'tipViews', id), { date: d, sport: sp, uid: user.uid, name: (profile && profile.name) || '', ts: Date.now() }).catch(() => { vSeen.delete(id); }); }
+    }
+    const seen = new Set(), ls = [];
+    vws.forEach(v => { if (v.sport === sp && v.uid && !seen.has(v.uid)) { seen.add(v.uid); ls.push(v); } });
+    ls.sort((a, b) => (a.ts || 0) - (b.ts || 0));
+    box.innerHTML = `<div class="vwb"><span class="vwt">👁 Megnézte: <b>${ls.length}</b> tag</span><span class="vwn">${ls.length ? ls.map(v => `<i>${esc(tpName(v.name) || 'Tag')}</i>`).join('') : '<em class="small">Még senki.</em>'}</span></div>`;
   }
   async function vote(d, sp, v) {
     if (!user || admin || d > today) return;
@@ -722,7 +743,7 @@ function tippekPage() {
     $('#dRow').hidden = st.v !== 'date'; $('#dpick').value = st.d;
     $('#sTabs').querySelectorAll('[data-s]').forEach(a => a.onclick = e => { e.preventDefault(); st.s = a.dataset.s; sync(); tabs(); list(); });
     $('#vTabs').querySelectorAll('[data-v]').forEach(a => a.onclick = e => { e.preventDefault(); st.v = a.dataset.v; sync(); tabs(); list(); });
-    watchR(); rate();
+    watchR(); watchV(); rate();
   }
   function list() {
     if (!loaded) return;

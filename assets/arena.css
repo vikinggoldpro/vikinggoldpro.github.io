@@ -71,3 +71,11 @@ html body .bgfx i{display:block!important}
 :focus-visible{outline-color:var(--ac)!important}
 @media(max-width:760px){.sp{min-height:170px}.bgfx i{inset:0!important;transform:none!important}}
 @media(prefers-reduced-motion:reduce){.bgfx i{transition:none}.sp::before{transition:none}}
+
+/* háttér: pár fokkal homályosabb */
+.bgfx canvas{filter:blur(3.5px);transform:scale(1.05)}
+/* ki nézte meg a tippeket */
+.vwb{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;padding:12px 14px;margin:8px 0 4px;border-radius:14px;border:1px solid rgba(var(--acg),.3);background:linear-gradient(160deg,rgba(var(--ink),.55),rgba(var(--ink),.75));-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.vwt{font-weight:700;font-size:.9rem;color:var(--tx)}.vwt b{color:var(--ac2);font-size:1.1rem}
+.vwn{display:flex;flex-wrap:wrap;gap:6px}
+.vwn i{font-style:normal;font-size:.8rem;font-weight:600;padding:4px 10px;border-radius:99px;background:rgba(var(--acg),.16);border:1px solid rgba(var(--acg),.4);color:#fff}

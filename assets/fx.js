@@ -72,7 +72,7 @@
       k = k || pick(); if (k === cur) return; cur = k;
       document.body.setAttribute('data-bg', k);
       var im = document.createElement('i');
-      im.style.backgroundImage = 'url("/assets/bg/' + k + '.svg")';
+      im.style.backgroundImage = 'url("/' + k + '.svg")';
       w.appendChild(im);
       requestAnimationFrame(function () { im.classList.add('on'); });
       setTimeout(function () { while (w.children.length > 1) w.removeChild(w.firstChild); }, 900);

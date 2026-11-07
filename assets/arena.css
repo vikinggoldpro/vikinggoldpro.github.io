@@ -115,3 +115,24 @@ html.lg-lock,html.lg-lock body{overflow:hidden!important}
 .legal-doc a{color:var(--ac2,#bae6fd);text-decoration:underline}
 #legalBox .legal-doc+.legal-doc{margin-top:18px}
 @media(max-width:600px){.lg-card{padding:14px;border-radius:18px}.lg-bar{flex-basis:30%}.lg-act .btn{flex:1 1 100%}}
+
+/* ----- elfogadó ablak: telefonbarát elrendezés ----- */
+.lg-card{overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+.lg-body{flex:1 1 220px;min-height:150px}
+.lg-chk label{align-items:flex-start}
+.lg-chk label span{flex:1;min-width:0;line-height:1.4}
+.lg-card:not(.rd) .lg-chk,.lg-card:not(.rd) #lgOk{display:none}
+.lg-card:not(.rd) .lg-act{justify-content:center}
+.lg-card:not(.rd) #lgNo{background:none!important;border:0!important;color:#8fa0bd!important;text-decoration:underline;box-shadow:none!important;font-weight:500}
+@media(max-width:600px){
+  #lgl{padding:8px;align-items:stretch}
+  .lg-card{max-height:none;width:100%;padding:12px 12px calc(14px + env(safe-area-inset-bottom,0px));gap:9px;border-radius:16px}
+  .lg-h{align-items:center;gap:8px}.lg-h p,.lg-note,.lg-ic{display:none}
+  .lg-h h2{font-size:1.1rem;margin:0}
+  .lg-tabs button{padding:9px 8px;font-size:.86rem}
+  .lg-body{flex:1 1 auto;min-height:260px;padding:12px}
+  .lg-body .legal-doc h2{font-size:1.1rem}
+  .lg-prog{gap:8px}.lg-prog small{font-size:.76rem;line-height:1.25}
+  .lg-chk{gap:9px}.lg-chk label{font-size:.88rem}
+  .lg-act{flex-direction:column}.lg-act .btn{width:100%}
+}

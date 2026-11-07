@@ -143,11 +143,12 @@ function layout() {
     out: '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/>',
     pc: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
     sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/>',
-    moon: '<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>'
+    moon: '<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>',
+    legal: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h5"/>'
   };
   const main0 = [['home', '/', 'Kezdőlap'], ['tippek', '/tippek', 'Tippek'], ['updates', '/updates', 'Updates'], ['chat', '/chat', 'Chat']]
     .concat(user && (adminFlag || (profile && profile.vip)) ? [['vip', '/vip', 'VIP Klub']] : [])
-    .concat([['contact', '/elerhetosegek', 'Elérhetőségek'], ['safe', '/felelos-jatek', 'Felelős játék']])
+    .concat([['contact', '/elerhetosegek', 'Elérhetőségek'], ['safe', '/felelos-jatek', 'Felelős játék'], ['legal', '/jogi', 'ÁSZF és adatkezelés']])
     .concat(user ? [['settings', '/beallitasok', 'Beállítások']] : []);
   const pg = { calc: 'calc', safe: 'safe', contact: 'contact' };
   const isOn = (k, h) => page === k || location.pathname.replace(/\/$/, '') === h.replace(/\/$/, '') && h !== '/' || (h === '/' && location.pathname === '/');
@@ -176,7 +177,7 @@ function layout() {
     ${user ? `<div class="sb-user"><a href="/beallitasok" class="sb-ava">${av(picOf(profile), nm)}</a><div class="sb-un"><b>${esc(nm)}</b><small>${role}</small></div><button id="logout" class="sb-ico" aria-label="Kijelentkezés" title="Kijelentkezés">${ic(IC.out)}</button></div>` : ''}
   </div>
 </aside>`;
-  $('#ftr').innerHTML = `<footer class="foot"><div class="wrap"><p class="small">A tippek nem garantálnak nyereményt. A fogadás kockázattal jár – csak annyit tegyél fel, amennyit megengedhetsz magadnak. 18 év alatt tilos. Segítség: Lelki Elsősegély Telefonszolgálat, 116-123 (ingyenes, 0–24). <a href="/felelos-jatek">Felelős játék</a>.</p></div></footer>`;
+  $('#ftr').innerHTML = `<footer class="foot"><div class="wrap"><p class="small">A tippek nem garantálnak nyereményt. A fogadás kockázattal jár – csak annyit tegyél fel, amennyit megengedhetsz magadnak. 18 év alatt tilos. Segítség: Lelki Elsősegély Telefonszolgálat, 116-123 (ingyenes, 0–24). <a href="/felelos-jatek">Felelős játék</a> · <a href="/jogi#aszf">ÁSZF</a> · <a href="/jogi#adatkezeles">Adatkezelési tájékoztató</a>.</p></div></footer>`;
   startClock();
   const sb = $('#sb'), so = $('#sbOpen'), sc = $('#sbScrim');
   const tgl = o => { sb.classList.toggle('open', o); sc.classList.toggle('open', o); so.setAttribute('aria-expanded', String(o)); };
@@ -1336,6 +1337,75 @@ function startTicker() {
   }
 }
 
+/* ---------- ÁSZF + adatkezelés: olvasóoldal és kötelező elfogadás ---------- */
+const legalSrc = () => '/js/legal.js?t=' + Math.floor(Date.now() / 3e5);
+async function legalPage() {
+  const box = $('#legalBox'); if (!box) return;
+  try {
+    const L = await vgImp(legalSrc());
+    box.innerHTML = `<div class="card legal-doc">${L.TERMS_HTML}</div><div class="card legal-doc">${L.PRIVACY_HTML}</div>`;
+    if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+  } catch (e) { box.innerHTML = '<div class="card"><p>A jogi dokumentumok betöltése nem sikerült. Frissítsd az oldalt.</p></div>'; }
+}
+async function legalCheck() {
+  if (page === 'legal') return;   // az olvasóoldalon nem takarunk
+  let L; try { L = await vgImp(legalSrc()); } catch (e) { return; }
+  const ver = L.legalVersion();
+  if (profile.legal && profile.legal.v === ver) return;
+  legalModal(L, ver, !!profile.legal);
+}
+function legalModal(L, ver, again) {
+  if ($('#lgl')) return;
+  const nm = (profile && profile.name) || '';
+  const el = document.createElement('div'); el.id = 'lgl'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+  el.innerHTML = `<div class="lg-card">
+    <div class="lg-h"><span class="lg-ic">📜</span><div><h2>${again ? 'Frissültek a feltételeink' : 'Mielőtt belépsz'}</h2>
+      <p>${again ? 'Az ÁSZF vagy az adatkezelési tájékoztató megváltozott. Kérjük, olvasd el újra, és fogadd el a továbblépéshez.' : 'Szia ' + esc(nm) + '! Kérjük, olvasd végig az ÁSZF-et és az adatkezelési tájékoztatót, majd fogadd el őket.'}</p></div></div>
+    <div class="lg-tabs"><button type="button" class="on" data-t="t">1. ÁSZF <i id="lgTi">○</i></button><button type="button" data-t="p">2. Adatkezelés <i id="lgPi">○</i></button></div>
+    <div class="lg-body" id="lgB"><div class="lg-doc legal-doc" data-d="t">${L.TERMS_HTML}</div><div class="lg-doc legal-doc" data-d="p" hidden>${L.PRIVACY_HTML}</div></div>
+    <div class="lg-prog"><div class="lg-bar"><span id="lgBar"></span></div><small id="lgHint">Görgess az ÁSZF aljára – a végéig kell olvasnod.</small></div>
+    <div class="lg-chk">
+      <label><input type="checkbox" id="lgCT" disabled> Elolvastam és elfogadom az <b>Általános Szerződési Feltételeket</b>.</label>
+      <label><input type="checkbox" id="lgCP" disabled> Elolvastam és elfogadom az <b>Adatkezelési tájékoztatót</b>.</label>
+      <label><input type="checkbox" id="lgCA" disabled> Kijelentem, hogy elmúltam <b>18 éves</b>.</label>
+    </div>
+    <div class="lg-act"><button class="btn" id="lgOk" disabled>Elfogadom és tovább</button><button class="btn ghost" id="lgNo" type="button">Nem fogadom el – kijelentkezés</button></div>
+    <p class="lg-note">Verzió: ${esc(L.LEGAL_UPDATED)} · A szövegek bármikor elérhetők a „ÁSZF és adatkezelés” menüpont alatt.</p></div>`;
+  document.body.appendChild(el); document.documentElement.classList.add('lg-lock');
+  const B = el.querySelector('#lgB'), read = { t: false, p: false }; let cur = 't';
+  const $e = q => el.querySelector(q);
+  const upd = () => {
+    $e('#lgTi').textContent = read.t ? '✓' : '○'; $e('#lgPi').textContent = read.p ? '✓' : '○';
+    $e('#lgCT').disabled = !read.t; $e('#lgCP').disabled = !read.p; $e('#lgCA').disabled = !(read.t && read.p);
+    if (!read.t) $e('#lgCT').checked = false; if (!read.p) $e('#lgCP').checked = false; if (!(read.t && read.p)) $e('#lgCA').checked = false;
+    $e('#lgHint').textContent = !read.t ? 'Görgess az ÁSZF aljára – a végéig kell olvasnod.' : !read.p ? 'Most váltsd át a „2. Adatkezelés” fülre, és olvasd végig.' : 'Köszönjük! Pipáld be az elfogadásokat.';
+    $e('#lgOk').disabled = !($e('#lgCT').checked && $e('#lgCP').checked && $e('#lgCA').checked);
+  };
+  const chk = () => {
+    const max = B.scrollHeight - B.clientHeight, pct = max <= 0 ? 100 : Math.min(100, Math.round(B.scrollTop / max * 100));
+    $e('#lgBar').style.width = pct + '%';
+    if (!read[cur] && (max <= 4 || B.scrollTop >= max - 14)) { read[cur] = true; upd(); }
+  };
+  B.addEventListener('scroll', chk, { passive: true });
+  el.querySelectorAll('.lg-tabs button').forEach(b => b.onclick = () => {
+    cur = b.dataset.t; el.querySelectorAll('.lg-tabs button').forEach(x => x.classList.toggle('on', x === b));
+    el.querySelectorAll('.lg-doc').forEach(d => { d.hidden = d.dataset.d !== cur; });
+    B.scrollTop = 0; setTimeout(chk, 60);
+  });
+  ['#lgCT', '#lgCP', '#lgCA'].forEach(q => $e(q).onchange = upd);
+  $e('#lgNo').onclick = async () => { try { await signOut(auth); } catch (e) { } location.href = '/'; };
+  $e('#lgOk').onclick = async () => {
+    const btn = $e('#lgOk'); btn.disabled = true;
+    try {
+      const rec = { v: ver, at: Date.now() };
+      await setDoc(doc(db, 'users', user.uid), { legal: rec }, { merge: true });
+      profile.legal = rec; el.remove(); document.documentElement.classList.remove('lg-lock');
+      toast('Köszönjük! Az elfogadásodat rögzítettük.');
+    } catch (e) { toast('Nem sikerült elmenteni: ' + (e.code || e.message), 'err'); btn.disabled = false; }
+  };
+  upd(); setTimeout(chk, 80); addEventListener('resize', chk);
+}
+
 /* ---------- indítás ---------- */
 async function start(u) {
   user = u; profile = null; adminFlag = false;
@@ -1352,9 +1422,10 @@ async function start(u) {
   else if (page === 'home') homePage();
   else if (page === 'settings') settingsPage();
   else if (page === 'members') membersPage();
+  else if (page === 'legal') legalPage();
   else if (page === 'updates' || page === 'chat') loadCommunity();
   if (user && profile && !profile.disabled && (user.emailVerified || isAdmin())) {
-    loadNotify();
+    loadNotify(); legalCheck();
     const beat = () => {
       if (document.hidden) return;
       let last = 0; try { last = +localStorage.getItem('vg_beat') || 0; } catch (e) { }

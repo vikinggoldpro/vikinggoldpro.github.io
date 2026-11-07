@@ -1339,17 +1339,26 @@ function startTicker() {
 
 /* ---------- ÁSZF + adatkezelés: olvasóoldal és kötelező elfogadás ---------- */
 const legalSrc = () => '/js/legal.js?t=' + Math.floor(Date.now() / 3e5);
+/* A jogi szöveget mindig frissen kérjük le (a böngésző/GitHub gyorsítótárát megkerülve), hogy a módosítás azonnal érvényesüljön. */
+async function legalLoad() {
+  try {
+    const r = await fetch('/js/legal.js', { cache: 'no-cache' });
+    if (!r.ok) throw new Error('legal ' + r.status);
+    const u = URL.createObjectURL(new Blob([await r.text()], { type: 'text/javascript' }));
+    try { return await import(u); } finally { URL.revokeObjectURL(u); }
+  } catch (e) { return vgImp(legalSrc()); }
+}
 async function legalPage() {
   const box = $('#legalBox'); if (!box) return;
   try {
-    const L = await vgImp(legalSrc());
+    const L = await legalLoad();
     box.innerHTML = `<div class="card legal-doc">${L.TERMS_HTML}</div><div class="card legal-doc">${L.PRIVACY_HTML}</div>`;
     if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
   } catch (e) { box.innerHTML = '<div class="card"><p>A jogi dokumentumok betöltése nem sikerült. Frissítsd az oldalt.</p></div>'; }
 }
 async function legalCheck() {
   if (page === 'legal') return;   // az olvasóoldalon nem takarunk
-  let L; try { L = await vgImp(legalSrc()); } catch (e) { return; }
+  let L; try { L = await legalLoad(); } catch (e) { return; }
   const ver = L.legalVersion();
   if (profile.legal && profile.legal.v === ver) return;
   legalModal(L, ver, !!profile.legal);

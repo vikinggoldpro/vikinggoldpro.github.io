@@ -42,6 +42,7 @@ export const TERMS_HTML = `
 <li>más személy nevében fellépni, vagy a Szolgáltató munkatársának kiadni magad;</li>
 <li>az Oldalon fogadóirodai hirdetéseket, referral-linkeket vagy más, engedély nélküli kereskedelmi tartalmat közzétenni.</li>
 </ul>
+<p><b>Felhasználónév.</b> A felhasználónév nem lehet más személy neve vagy megtévesztő név. Különösen nem adhatod ki magad a Szolgáltató munkatársának, adminisztrátornak vagy moderátornak, és nem használhatsz olyan nevet, amely ezekhez összetéveszthetően hasonlít (az admin nevek fenntartottak). Tilos sértő, obszcén, gyűlöletkeltő, jogsértő vagy kereskedelmi célú (hirdető, fogadóirodai, referral) nevet választani. A Szolgáltató jogosult az ilyen nevet előzetes értesítés nélkül megváltoztatni, a fiókot felfüggeszteni vagy törölni.</p>
 
 <h3>6. Chat, üzenetek és tartalmak</h3>
 <p>A chatben és az üzenetekben közzétett tartalomért a közzétevő felel. A Szolgáltató a szabályokat sértő üzeneteket törölheti, a Felhasználót időlegesen némíthatja, a fiókot felfüggesztheti vagy véglegesen letilthatja. A moderálásról a Szolgáltató dönt; ha úgy érzed, tévedés történt, jelezd ${KAPCSOLAT}.</p>

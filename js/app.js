@@ -1365,9 +1365,9 @@ function legalModal(L, ver, again) {
     <div class="lg-body" id="lgB"><div class="lg-doc legal-doc" data-d="t">${L.TERMS_HTML}</div><div class="lg-doc legal-doc" data-d="p" hidden>${L.PRIVACY_HTML}</div></div>
     <div class="lg-prog"><div class="lg-bar"><span id="lgBar"></span></div><small id="lgHint">Görgess az ÁSZF aljára – a végéig kell olvasnod.</small></div>
     <div class="lg-chk">
-      <label><input type="checkbox" id="lgCT" disabled> Elolvastam és elfogadom az <b>Általános Szerződési Feltételeket</b>.</label>
-      <label><input type="checkbox" id="lgCP" disabled> Elolvastam és elfogadom az <b>Adatkezelési tájékoztatót</b>.</label>
-      <label><input type="checkbox" id="lgCA" disabled> Kijelentem, hogy elmúltam <b>18 éves</b>.</label>
+      <label><input type="checkbox" id="lgCT" disabled><span>Elolvastam és elfogadom az <b>Általános Szerződési Feltételeket</b>.</span></label>
+      <label><input type="checkbox" id="lgCP" disabled><span>Elolvastam és elfogadom az <b>Adatkezelési tájékoztatót</b>.</span></label>
+      <label><input type="checkbox" id="lgCA" disabled><span>Kijelentem, hogy elmúltam <b>18 éves</b>.</span></label>
     </div>
     <div class="lg-act"><button class="btn" id="lgOk" disabled>Elfogadom és tovább</button><button class="btn ghost" id="lgNo" type="button">Nem fogadom el – kijelentkezés</button></div>
     <p class="lg-note">Verzió: ${esc(L.LEGAL_UPDATED)} · A szövegek bármikor elérhetők a „ÁSZF és adatkezelés” menüpont alatt.</p></div>`;
@@ -1380,6 +1380,9 @@ function legalModal(L, ver, again) {
     if (!read.t) $e('#lgCT').checked = false; if (!read.p) $e('#lgCP').checked = false; if (!(read.t && read.p)) $e('#lgCA').checked = false;
     $e('#lgHint').textContent = !read.t ? 'Görgess az ÁSZF aljára – a végéig kell olvasnod.' : !read.p ? 'Most váltsd át a „2. Adatkezelés” fülre, és olvasd végig.' : 'Köszönjük! Pipáld be az elfogadásokat.';
     $e('#lgOk').disabled = !($e('#lgCT').checked && $e('#lgCP').checked && $e('#lgCA').checked);
+    const card = el.firstElementChild, was = card.classList.contains('rd'), now = read.t && read.p;
+    card.classList.toggle('rd', now);
+    if (now && !was) setTimeout(() => { try { card.scrollTo({ top: card.scrollHeight, behavior: 'smooth' }); } catch (e) { } }, 60);
   };
   const chk = () => {
     const max = B.scrollHeight - B.clientHeight, pct = max <= 0 ? 100 : Math.min(100, Math.round(B.scrollTop / max * 100));

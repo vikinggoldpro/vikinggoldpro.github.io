@@ -79,3 +79,39 @@ html body .bgfx i{display:block!important}
 .vwt{font-weight:700;font-size:.9rem;color:var(--tx)}.vwt b{color:var(--ac2);font-size:1.1rem}
 .vwn{display:flex;flex-wrap:wrap;gap:6px}
 .vwn i{font-style:normal;font-size:.8rem;font-weight:600;padding:4px 10px;border-radius:99px;background:rgba(var(--acg),.16);border:1px solid rgba(var(--acg),.4);color:#fff}
+
+/* ----- ÁSZF / adatkezelés: kötelező elfogadó ablak + olvasóoldal ----- */
+html.lg-lock,html.lg-lock body{overflow:hidden!important}
+#lgl{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(2,6,14,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.lg-card{width:min(860px,100%);max-height:calc(100vh - 28px);max-height:calc(100dvh - 28px);display:flex;flex-direction:column;gap:12px;padding:18px;border-radius:22px;background:linear-gradient(160deg,#0d1730,#070d1d);border:1px solid rgba(var(--acg,56,189,248),.45);box-shadow:0 40px 100px -30px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.05)}
+.lg-h{display:flex;gap:12px;align-items:flex-start}
+.lg-ic{font-size:1.9rem;line-height:1}
+.lg-h h2{margin:0 0 4px;font-size:1.25rem}
+.lg-h p{margin:0;color:#c3c8d6;font-size:.92rem}
+.lg-tabs{display:flex;gap:8px}
+.lg-tabs button{flex:1;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:#dfe6f5;font:inherit;font-weight:700;cursor:pointer;transition:.18s}
+.lg-tabs button i{font-style:normal;margin-left:6px;color:var(--ac2,#bae6fd)}
+.lg-tabs button.on{background:linear-gradient(135deg,var(--ac2,#bae6fd),var(--ac,#38bdf8));color:#04110a;border-color:transparent}
+.lg-tabs button.on i{color:#04110a}
+.lg-body{flex:1;min-height:180px;overflow-y:auto;overscroll-behavior:contain;padding:14px 16px;border-radius:14px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);scrollbar-width:thin}
+.lg-doc[hidden]{display:none!important}
+.lg-prog{display:flex;align-items:center;gap:12px}
+.lg-bar{flex:0 0 38%;height:7px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}
+.lg-bar span{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--ac2,#bae6fd),var(--ac,#38bdf8));transition:width .15s}
+.lg-prog small{color:#c3c8d6}
+.lg-chk{display:grid;gap:8px}
+.lg-chk label{display:flex;gap:10px;align-items:flex-start;font-size:.92rem;color:#e8eefb;cursor:pointer}
+.lg-chk input{margin-top:3px;width:18px;height:18px;accent-color:var(--ac,#38bdf8);flex:none}
+.lg-chk input:disabled+*,.lg-chk label:has(input:disabled){opacity:.45;cursor:not-allowed}
+.lg-act{display:flex;gap:10px;flex-wrap:wrap}
+.lg-act .btn:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.4);transform:none!important}
+.lg-note{margin:0;font-size:.76rem;color:#8fa0bd}
+.legal-doc h2{margin:0 0 4px}
+.legal-doc h3{margin:20px 0 6px;font-size:1.02rem;color:var(--ac2,#bae6fd)}
+.legal-doc p,.legal-doc li{font-size:.93rem;line-height:1.6;color:#d6deef}
+.legal-doc ul{padding-left:20px;margin:6px 0}
+.legal-doc li{margin:4px 0}
+.legal-doc .lg-meta{font-size:.8rem;color:#8fa0bd;margin:0 0 6px}
+.legal-doc a{color:var(--ac2,#bae6fd);text-decoration:underline}
+#legalBox .legal-doc+.legal-doc{margin-top:18px}
+@media(max-width:600px){.lg-card{padding:14px;border-radius:18px}.lg-bar{flex-basis:30%}.lg-act .btn{flex:1 1 100%}}

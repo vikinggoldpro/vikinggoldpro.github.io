@@ -341,24 +341,45 @@ function statRanges() {
 function statCss() {
   if (document.getElementById('vgs-css')) return;
   const st = document.createElement('style'); st.id = 'vgs-css';
-  /* csak az elrendezés; a megjelenés az assets/arena.css-ben van */
   st.textContent = `
-#statBox{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 16px;text-align:left}
-.vgs{position:relative;min-width:0}
-.vgs-x{grid-column:1/-1;text-align:center}
+#statBox{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:0 0 14px;text-align:left}
+.vgs{position:relative;overflow:hidden;min-width:0;padding:24px 24px 18px;border-radius:20px;border:1px solid rgba(148,163,184,.16);background:linear-gradient(180deg,rgba(17,24,39,.88),rgba(10,14,24,.94));box-shadow:0 24px 60px -30px #000;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.vgs::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,#55c4f7,transparent)}
+.vgs-x{grid-column:1/-1;text-align:center;padding:30px 20px}.vgs-x .big{font-size:2rem}.vgs-x p{margin:8px 0 0;color:#94a3b8}
 .vgs-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px}
-.vgs-main{display:flex;align-items:flex-end;gap:16px}
-.vgs-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
-.vgs-cmp{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
-.vgs-r{display:grid;grid-template-columns:minmax(104px,1.1fr) minmax(40px,1fr) 44px 46px;align-items:center;gap:12px}
-@media(max-width:760px){#statBox{grid-template-columns:minmax(0,1fr)}}`;
+.vgs-h span{font-weight:800;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:#b8eaff}
+.vgs-h small{font-size:.8rem;color:#94a3b8;font-weight:600}
+.vgs-main{display:flex;align-items:flex-end;gap:16px;margin:16px 0 14px}
+.vgs-pct{font-size:3.6rem;line-height:.9;font-weight:800;letter-spacing:-.04em;color:#b8eaff;font-variant-numeric:tabular-nums}
+.vgs-pct i{font-style:normal;font-size:1.7rem;margin-left:2px;color:#55c4f7}
+.vgs-lab{padding-bottom:3px;display:flex;flex-direction:column;gap:2px}
+.vgs-lab b{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:#e2e8f0}
+.vgs-lab span{font-size:.82rem;color:#94a3b8}
+.vgs-bar{height:8px;border-radius:8px;background:rgba(148,163,184,.16);overflow:hidden}
+.vgs-bar u{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#2dd4a0,#7ef0c8);transition:width .6s}
+.vgs-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:16px}
+.vgs-c{padding:10px 4px;border-radius:12px;text-align:center;border:1px solid rgba(148,163,184,.14);background:rgba(255,255,255,.03)}
+.vgs-c b{display:block;font-size:1.35rem;line-height:1.2;font-weight:800;color:#f1f5f9;font-variant-numeric:tabular-nums}
+.vgs-c span{display:block;margin-top:2px;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vgs-c.w{border-color:rgba(45,212,160,.4);background:rgba(45,212,160,.07)}.vgs-c.w b{color:#2dd4a0}
+.vgs-c.l{border-color:rgba(251,90,110,.4);background:rgba(251,90,110,.07)}.vgs-c.l b{color:#fb5a6e}
+.vgs-cmp{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-top:14px;padding:11px 14px;border-radius:12px;background:rgba(255,255,255,.03);font-size:.86rem;color:#94a3b8}
+.vgs-cmp b{color:#b8eaff;font-size:1rem}.vgs-cmp em{font-style:normal;color:#94a3b8}
+.vgs-cmp i{font-style:normal;font-weight:800;margin-left:auto}.vgs-cmp i.up{color:#2dd4a0}.vgs-cmp i.dn{color:#fb5a6e}.vgs-cmp i.eq{color:#94a3b8}
+.vgs-tot{margin:10px 2px 0;font-size:.78rem;color:#64748b}
+.vgs-sp{margin-top:14px;padding-top:6px;border-top:1px solid rgba(148,163,184,.14)}
+.vgs-r{display:grid;grid-template-columns:minmax(104px,1.1fr) minmax(40px,1fr) 44px 46px;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(148,163,184,.1);font-size:.9rem;color:#e2e8f0}
+.vgs-r:last-child{border-bottom:0}
+.vgs-r .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vgs-r .m{height:5px;border-radius:5px;background:rgba(148,163,184,.16);overflow:hidden}.vgs-r .m u{display:block;height:100%;background:#2dd4a0;border-radius:5px}
+.vgs-r .s{text-align:right;color:#94a3b8;font-variant-numeric:tabular-nums;white-space:nowrap}
+.vgs-r b{text-align:right;color:#b8eaff;font-variant-numeric:tabular-nums}
+@media(max-width:760px){#statBox{grid-template-columns:minmax(0,1fr)}.vgs{padding:20px 18px 14px}.vgs-pct{font-size:3rem}}`;
   document.head.appendChild(st);
 }
-const ICO_LOCK = '<span class="vgs-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>';
-const ICO_WARN = '<span class="vgs-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.5v.01"/></svg></span>';
 function homeStats(tips, err, id = 'statBox', vip = false) {
   try { homeStatsDraw(tips, err, id, vip); }
-  catch (e) { const b = $('#' + id); if (b) b.innerHTML = `<div class="vgs vgs-x">${ICO_WARN}<p class="small" style="font-size:.95rem">A statisztika kiszámítása nem sikerült.</p><p class="small" style="word-break:break-word;color:var(--bad)">${esc(String((e && e.message) || e))}</p></div>`; }
+  catch (e) { const b = $('#' + id); if (b) b.innerHTML = `<div class="card psx"><div class="big">⚠️</div><p class="small" style="font-size:.95rem">A statisztika kiszámítása nem sikerült.</p><p class="small" style="word-break:break-word;color:var(--bad)">${esc(String((e && e.message) || e))}</p></div>`; }
 }
 const VIP_KEYS = ['labdarugas', 'jegkorong', 'kezilabda'];
 const vipEff = t => { const s = t.status || 'pend'; if (s !== 'pend') return s; return ((t.result || t.corners) && evalTip({ ...t, sport: sportOf(t) })) || 'pend'; };
@@ -370,7 +391,7 @@ function homeStatsDraw(tips, err, id = 'statBox', vip = false) {
     const denied = vip && err && /permission/i.test(String(err.code || err.message || err));
     const msg = tips === null || denied ? (vip ? (denied ? 'A VIP statisztika most nem érhető el.' + (isAdmin() ? ' (Admin: a Firestore szabályban a vipTips olvasását engedélyezd a belépett tagoknak.)' : '') : 'A VIP statisztikát a belépett tagok látják.') : 'A statisztikát a regisztrált, belépett tagok látják.') : 'A statisztika most nem tölthető be.' + (err ? `<br><span style="color:var(--bad);word-break:break-word">${esc(String(err.code || err.message || err))}</span>` : '');
     const cta = tips === null && !(vip && user) ? '<div class="row" style="justify-content:center;margin-top:14px"><a class="btn" href="/auth?mode=register">Regisztráció</a><a class="btn ghost" href="/auth?mode=login">Belépés</a></div>' : '';
-    box.innerHTML = `<div class="vgs vgs-x">${tips === null || denied ? ICO_LOCK : ICO_WARN}<p style="font-size:.95rem">${msg}</p>${denied ? '' : cta}</div>`;
+    box.innerHTML = `<div class="vgs vgs-x"><div class="big">${tips === null || denied ? '🔒' : '⚠️'}</div><p style="font-size:.95rem">${msg}</p>${denied ? '' : cta}</div>`;
     return;
   }
   if (vip) tips = tips.filter(t => VIP_KEYS.includes(t.sport));
@@ -399,7 +420,7 @@ let boardTips = null, boardPer = 'month';
 function homeBoard(tips) {
   const box = $('#boardBox'); if (!box) return;
   statCss();
-  if (!tips) { box.innerHTML = `<div class="vgs vgs-x">${tips === null ? ICO_LOCK : ICO_WARN}<p style="font-size:.95rem">${tips === null ? 'A ranglistát a regisztrált, belépett tagok látják.' : 'A ranglista most nem tölthető be.'}</p></div>`; return; }
+  if (!tips) { box.innerHTML = `<div class="vgs vgs-x"><div class="big">${tips === null ? '🔒' : '⚠️'}</div><p style="font-size:.95rem">${tips === null ? 'A ranglistát a regisztrált, belépett tagok látják.' : 'A ranglista most nem tölthető be.'}</p></div>`; return; }
   boardTips = tips;
   const R = statRanges(), inR = (t, r) => String(t.date || '') >= r[0] && String(t.date || '') < r[1];
   const per = { week: [R.week, 'Ez a hét', R.weekLab], month: [R.month, 'Ez a hónap', R.monthLab], all: [null, 'Összes', R.from + ' óta'] }[boardPer];
@@ -410,9 +431,9 @@ function homeBoard(tips) {
     l.forEach(t => { let s = 'pend'; try { s = effStatus(t); } catch (e) { } const o = Number(t.odds); if (s === 'win') { w++; if (o > 1) { pr += o - 1; stk++; } } else if (s === 'loss') { x++; if (o > 1) { pr -= 1; stk++; } } });
     return { who, w, dec: w + x, pct: w + x ? Math.round(w / (w + x) * 100) : null, pr, has: stk > 0, sk: streakOf(l) };
   }).filter(r => r.dec).sort((a, b) => b.pr - a.pr || (b.pct || 0) - (a.pct || 0) || b.dec - a.dec);
-  const f2 = n => n.toFixed(2).replace('.', ','), sg = n => (n > 0 ? '+' : n < 0 ? '−' : '') + f2(Math.abs(n)), medal = [];
+  const f2 = n => n.toFixed(2).replace('.', ','), sg = n => (n > 0 ? '+' : n < 0 ? '−' : '') + f2(Math.abs(n)), medal = ['🥇', '🥈', '🥉'];
   const tabs = [['week', 'Hét'], ['month', 'Hónap'], ['all', 'Összes']].map(([k, n]) => `<button type="button" class="btab${boardPer === k ? ' on' : ''}" data-bp="${k}">${n}</button>`).join('');
-  const tbl = rows.length ? `<div class="btbl"><div class="brow bh"><span>#</span><span>Tippadó</span><span>Találat</span><span>Arány</span><span>Profit</span><span>Széria</span></div>${rows.map((r, i) => `<div class="brow"><span>${medal[i] || i + 1}</span><span class="bn">${esc(r.who)}</span><span>${r.w} | ${r.dec}</span><span><em class="bar"><u style="width:${r.pct}%"></u></em>${r.pct}%</span><span class="${r.has ? (r.pr > 0 ? 'pos' : r.pr < 0 ? 'neg' : '') : ''}">${r.has ? sg(r.pr) : '–'}</span><span>${r.sk.n >= 2 ? `<em class="sk ${r.sk.t === 'win' ? 'w' : 'l'}">${r.sk.n} ${r.sk.t === 'win' ? 'nyert' : 'vesztett'}</em>` : '–'}</span></div>`).join('')}</div><p class="small" style="margin:12px 0 0">A profit 1 egységes tétet feltételez, csak a szorzóval rendelkező, lezárt tippekre. A múltbeli eredmény nem garantál jövőbeli nyereséget.</p>` : '<p class="small" style="padding:16px 0">Ebben az időszakban még nincs lezárt tipp.</p>';
+  const tbl = rows.length ? `<div class="btbl"><div class="brow bh"><span>#</span><span>Tippadó</span><span>Találat</span><span>Arány</span><span>Profit</span><span>Széria</span></div>${rows.map((r, i) => `<div class="brow"><span>${medal[i] || i + 1}</span><span class="bn">${esc(r.who)}</span><span>${r.w} | ${r.dec}</span><span><em class="bar"><u style="width:${r.pct}%"></u></em>${r.pct}%</span><span class="${r.has ? (r.pr > 0 ? 'pos' : r.pr < 0 ? 'neg' : '') : ''}">${r.has ? sg(r.pr) : '–'}</span><span>${r.sk.n >= 2 ? (r.sk.t === 'win' ? '🔥 ' : '❄️ ') + r.sk.n : '–'}</span></div>`).join('')}</div><p class="small" style="margin:12px 0 0">A profit 1 egységes tétet feltételez, csak a szorzóval rendelkező, lezárt tippekre. A múltbeli eredmény nem garantál jövőbeli nyereséget.</p>` : '<p class="small" style="padding:16px 0">Ebben az időszakban még nincs lezárt tipp.</p>';
   box.innerHTML = `<div class="vgs board"><div class="vgs-h"><span>Tippadói ranglista</span><small>${per[1]} · ${per[2]}</small></div><div class="btabs">${tabs}</div>${tbl}</div>`;
   box.querySelectorAll('[data-bp]').forEach(b => b.onclick = () => { boardPer = b.dataset.bp; homeBoard(boardTips); });
 }
@@ -437,7 +458,7 @@ function homePage() {
   };
   let lastUsers = null;
   onSnapshot(collection(db, 'admins'), sn => { ADMIN_SET = new Set([...RESERVED, ...sn.docs.map(d => String(d.data().name || '').toLowerCase())]); $('#stTipsters').textContent = Math.max(sn.size, 1); if (lastUsers) renderPl(lastUsers); }, () => { $('#stTipsters').textContent = ADMIN_NAMES.length; });
-  $('#sportTiles').innerHTML = SPORTS.map(([k, n, e]) => `<a class="hm-sport" href="/tippek?s=${k}"><span class="e" aria-hidden="true">${e}</span><b>${n}</b><span class="go">Megnyitás</span></a>`).join('');
+  $('#sportTiles').innerHTML = SPORTS.map(([k, n, e]) => `<a class="sp reveal" href="/tippek?s=${k}"><span class="e">${e}</span><b>${n}</b><small>Megnyitás</small></a>`).join('');
   watchUsers(list => { lastUsers = list; renderPl(list); });
   const member = user && profile && !profile.disabled && (user.emailVerified || isAdmin());
   if (member) {

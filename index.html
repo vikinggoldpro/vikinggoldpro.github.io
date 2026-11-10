@@ -22,7 +22,7 @@
 <script>if(/\.html$/.test(location.pathname))history.replaceState(null,"",location.pathname.replace(/\/index\.html$/,"/").replace(/\.html$/,"")+location.search+location.hash)</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
-<script src="/js/theme.js?v=20261104a"></script><link rel="stylesheet" href="/assets/style.css?v=20261104a"><link rel="stylesheet" href="/assets/pro.css?v=20261104a"><link rel="stylesheet" href="/assets/arena.css?v=20261106a">
+<script src="/js/theme.js?v=20261110a"></script><link rel="stylesheet" href="/assets/style.css?v=20261110a"><link rel="stylesheet" href="/assets/pro.css?v=20261110a"><link rel="stylesheet" href="/assets/arena.css?v=20261110a">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"VikingGOLD","url":"https://vikinggoldpro.github.io/","inLanguage":"hu"},{"@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Mi az a VikingGOLD?","acceptedAnswer":{"@type":"Answer","text":"Közösségi tippoldal: a tippadók naponta publikálnak tippeket labdarúgásban, jégkorongban, kézilabdában, teniszben és kosárlabdában, az eredményeket pedig átláthatóan, visszanézhetően gyűjtjük."}},
 {"@type":"Question","name":"Ingyenes a regisztráció?","acceptedAnswer":{"@type":"Answer","text":"Igen. A regisztráció ingyenes, utána azonnal elérhető a napi tippek listája és az összes korábbi eredmény."}},
@@ -30,58 +30,63 @@
 {"@type":"Question","name":"Hogyan számoljátok a találati arányt?","acceptedAnswer":{"@type":"Answer","text":"Nyert ÷ (nyert + vesztett). Az érvénytelen és a még függőben lévő tippek nem számítanak bele."}}]}]}</script>
 </head>
 <body data-page="home">
-<canvas id="fx" aria-hidden="true"></canvas>
 <div id="hdr"></div>
 <main id="main">
-<section class="hero hero2 wrap solo">
-  <div class="hero-t">
-    <h1>Tippek, amiket bármikor visszanézhetsz</h1>
-    <p class="lead">A VikingGOLD tippadói minden nap kidolgozott tippeket publikálnak labdarúgásban, jégkorongban, kézilabdában, teniszben és kosárlabdában. A végeredmények átláthatóak, a tagok bármikor visszanézhetik őket.</p>
-    <div class="cta"><a class="btn" href="/tippek">Mai tippek megnyitása</a><a class="btn ghost" id="ctaReg" href="/auth?mode=register">Ingyenes csatlakozás</a></div>
-  </div>
+<section class="hm-hero wrap">
+  <h1>Tippek, amiket bármikor visszanézhetsz</h1>
+  <p class="lead">A VikingGOLD tippadói minden nap kidolgozott tippeket publikálnak labdarúgásban, jégkorongban, kézilabdában, teniszben és kosárlabdában. A végeredmények átláthatók, a tagok bármikor visszanézhetik őket.</p>
+  <div class="cta"><a class="btn" href="/tippek">Mai tippek megnyitása</a><a class="btn ghost" id="ctaReg" href="/auth?mode=register">Ingyenes csatlakozás</a></div>
+  <ul class="hm-assure">
+    <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Ingyenes regisztráció</li>
+    <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Öt sportág egy helyen</li>
+    <li><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Minden eredmény visszanézhető</li>
+  </ul>
 </section>
-<section class="wrap">
-  <div class="stats">
-    <div class="stat"><b id="stPlayers">–</b><span>Aktív tag</span></div>
-    <div class="stat"><b id="stTipsters">–</b><span>Tippadó</span></div>
-    <div class="stat"><b>5</b><span>Sportág</span></div>
-    <div class="stat"><b id="stToday">🔒</b><span>Mai tippek</span></div>
+
+<section class="wrap hm">
+  <div class="hm-stats">
+    <div class="hm-stat"><b id="stPlayers">–</b><span>Aktív tag</span></div>
+    <div class="hm-stat"><b id="stTipsters">–</b><span>Tippadó</span></div>
+    <div class="hm-stat"><b>5</b><span>Sportág</span></div>
+    <div class="hm-stat"><b id="stToday">–</b><span>Mai tippek</span></div>
   </div>
-  <h2 class="sect-t reveal">Találati <span class="g">statisztika</span></h2>
-  <div class="reveal" id="statBox"><div class="vgs vgs-x" data-wait><p class="small">Betöltés…</p></div></div>
-  <h2 class="sect-t reveal"><span class="g">VIP</span> statisztika</h2>
-  <div class="reveal" id="vipStatBox"><div class="vgs vgs-x"><p class="small">Betöltés…</p></div></div>
-  <h2 class="sect-t reveal">Tippadói <span class="g">ranglista</span></h2>
-  <div class="reveal" id="boardBox"><div class="vgs vgs-x"><p class="small">Betöltés…</p></div></div>
-  <h2 class="sect-t reveal">Válaszd ki a <span class="g">sportágad</span></h2>
-  <div class="sports" id="sportTiles"></div>
-  <div class="card reveal" style="margin-top:26px">
-    <h2 style="font-size:1.3rem">Aktív tagok <span class="small" id="plCount"></span></h2>
-    <div class="chips" id="plist"><span class="small">Betöltés…</span></div>
-  </div>
-  <h2 class="sect-t reveal">Hogyan <span class="g">működik?</span></h2>
-  <div class="how reveal">
-    <div class="how-s"><i>1</i><b>Regisztrálj ingyen</b><p>Felhasználónév, e-mail, jelszó – 1 perc az egész. A megerősítő levelet nézd meg a spam mappában is.</p></div>
-    <div class="how-s"><i>2</i><b>Nézd a napi tippeket</b><p>Minden tipp mellett ott a liga, a piac, a szorzó és a tippadó neve. Szűrhetsz sportágra, ligára, szorzóra.</p></div>
-    <div class="how-s"><i>3</i><b>Kövesd az eredményt</b><p>A végeredmény alapján a rendszer magától dönti el, hogy a tipp nyert vagy vesztett. Semmi nem tűnik el, bármikor visszanézheted.</p></div>
-  </div>
-  <h2 class="sect-t reveal">Gyakori <span class="g">kérdések</span></h2>
-  <div class="faq reveal" id="faq">
+
+  <h2 class="hm-h">Találati statisztika</h2>
+  <div id="statBox"><div class="vgs vgs-x" data-wait><p class="small">Betöltés…</p></div></div>
+
+  <h2 class="hm-h">Tippadói ranglista</h2>
+  <div id="boardBox"><div class="vgs vgs-x"><p class="small">Betöltés…</p></div></div>
+
+  <h2 class="hm-h">Válaszd ki a sportágad</h2>
+  <div class="hm-sports" id="sportTiles"></div>
+
+  <h2 class="hm-h">Aktív tagok <span class="hm-n" id="plCount"></span></h2>
+  <div class="hm-members"><div class="chips" id="plist"><span class="small">Betöltés…</span></div></div>
+
+  <h2 class="hm-h">Hogyan működik?</h2>
+  <ol class="hm-steps">
+    <li><i>1</i><b>Regisztrálj ingyen</b><p>Felhasználónév, e-mail, jelszó – 1 perc az egész. A megerősítő levelet nézd meg a spam mappában is.</p></li>
+    <li><i>2</i><b>Nézd a napi tippeket</b><p>Minden tipp mellett ott a liga, a piac, a szorzó és a tippadó neve. Szűrhetsz sportágra, ligára, szorzóra.</p></li>
+    <li><i>3</i><b>Kövesd az eredményt</b><p>A végeredmény alapján a rendszer magától dönti el, hogy a tipp nyert vagy vesztett. Semmi nem tűnik el, bármikor visszanézheted.</p></li>
+  </ol>
+
+  <h2 class="hm-h">Gyakori kérdések</h2>
+  <div class="hm-faq" id="faq">
     <details><summary>Mi az a VikingGOLD?</summary><p>Közösségi tippoldal: a tippadók naponta publikálnak tippeket labdarúgásban, jégkorongban, kézilabdában, teniszben és kosárlabdában, az eredményeket pedig átláthatóan, visszanézhetően gyűjtjük.</p></details>
     <details><summary>Ingyenes a regisztráció?</summary><p>Igen. A regisztráció ingyenes, utána azonnal elérhető a napi tippek listája és az összes korábbi eredmény.</p></details>
     <details><summary>Garantáltan nyer egy tipp?</summary><p>Nem. A tippek nem garantálnak nyereményt, a fogadás kockázattal jár. Csak olyan összeget tegyél fel, amit megengedhetsz magadnak. Ha úgy érzed, kicsúszik az irányítás, nézd meg a <a href="/felelos-jatek">Felelős játék</a> oldalt.</p></details>
     <details><summary>Mit jelent a „profit egységben” és a ROI?</summary><p>Ha minden tippre 1 egységet tennél fel: a nyertes tipp a szorzó mínusz 1 egységet hoz, a vesztes −1 egységet. A ROI ennek az eredménynek a százaléka a feltett egységekhez képest. Csak a szorzóval rendelkező, lezárt tippek számítanak bele.</p></details>
     <details><summary>Hogyan számoljátok a találati arányt?</summary><p>Nyert ÷ (nyert + vesztett). Az érvénytelen és a még függőben lévő tippek nem számítanak bele.</p></details>
     <details><summary>Kérhetek értesítést?</summary><p>Igen. Belépés után a harang ikonnál bekapcsolhatod a böngészős értesítéseket az újdonságokról és a bejelentésekről. Az oldalt telepítheted a telefonod kezdőképernyőjére is, így alkalmazásként nyílik meg.</p></details>
-    <details><summary>Mi az a VIP Klub?</summary><p>A VIP Klub fizetős, zárt részleg saját tippekkel és statisztikával. A csatlakozáshoz keress minket <b>Discordon</b> vagy írj <b>privát üzenetet</b> az oldalon az <a href="/elerhetosegek">Elérhetőségek</a> oldalon.</p></details>
     <details><summary>Hogyan érhetlek el titeket?</summary><p>Az <a href="/elerhetosegek">Elérhetőségek</a> oldalon privát üzenetet küldhetsz közvetlenül az oldalon, általában 24 órán belül válaszolunk. Discordon is megtalálsz minket.</p></details>
   </div>
-  <div class="banner reveal"><div><h3>Csatlakozz, és láss minden tippet</h3><p>A regisztráció ingyenes és 1 perc. Utána azonnal elérhető minden napi tipp és az összes korábbi eredmény.</p></div><div id="bnRow"></div></div>
+
+  <div class="hm-join"><div><h3>Csatlakozz, és láss minden tippet</h3><p>A regisztráció ingyenes és 1 perc. Utána azonnal elérhető minden napi tipp és az összes korábbi eredmény.</p></div><div id="bnRow"></div></div>
 </section>
 </main>
 <div id="ftr"></div>
-<script src="/assets/fx.js?v=20261106a"></script>
-<script type="module" src="/js/app.js?v=20261106a"></script>
-<script>setTimeout(function(){var w=document.querySelector('#statBox [data-wait]');if(w)w.innerHTML='<div class="big">⚠️</div><p class="small" style="font-size:.95rem">A statisztika nem töltődött be. Nyomj Ctrl+F5-öt (vagy privát ablakban nyisd meg). Ha így is marad, a <b>js/app.js</b> régi verziója van feltöltve.</p>'},6000)</script>
+<script src="/assets/fx.js?v=20261110a"></script>
+<script type="module" src="/js/app.js?v=20261110a"></script>
+<script>setTimeout(function(){var w=document.querySelector('#statBox [data-wait]');if(w)w.innerHTML='<p class="small" style="font-size:.95rem">A statisztika nem töltődött be. Frissítsd az oldalt (Ctrl+F5), vagy nyisd meg privát ablakban.</p>'},6000)</script>
 </body>
 </html>
